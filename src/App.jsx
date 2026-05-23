@@ -575,7 +575,7 @@ async function callClaude(system, user, maxTokens=2000) {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      model:"claude-sonnet-4-20250514",
+      model:"claude-sonnet-4-5",
       max_tokens: maxTokens,
       system,
       messages:[{role:"user",content:user}]
@@ -1007,7 +1007,7 @@ IUCN/NatureServe status and any population trend notes.`;
       const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1200, system: systemPrompt, messages })
+        body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 1200, system: systemPrompt, messages })
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
