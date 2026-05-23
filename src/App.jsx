@@ -271,13 +271,13 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(8,14,6,.82);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.modal{background:var(--paper);max-width:620px;width:100%;border-radius:2px;box-shadow:0 48px 120px rgba(0,0,0,.55);max-height:92vh;overflow-y:auto;position:relative}
-.modal-ph{height:200px;display:flex;align-items:center;justify-content:center;font-size:76px}
+.modal{background:var(--paper);max-width:720px;width:100%;border-radius:2px;box-shadow:0 48px 120px rgba(0,0,0,.55);max-height:92vh;overflow-y:auto;position:relative}
+.modal-ph{height:260px;display:flex;align-items:center;justify-content:center;font-size:76px}
 .modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);border:none;cursor:pointer;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;font-size:15px;transition:background .15s}
 .modal-close:hover{background:rgba(0,0,0,.7)}
-.modal-hdr{padding:18px 26px 14px;border-bottom:1px solid var(--mist)}
-.modal-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--ink);margin-bottom:2px}
-.modal-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--stone)}
+.modal-hdr{padding:18px 26px 0;border-bottom:1px solid var(--mist)}
+.modal-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.modal-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--stone);margin-bottom:12px}
 .modal-body{padding:18px 26px 28px}
 .modal-desc{font-size:13.5px;line-height:1.85;color:#3e3428;margin-bottom:20px}
 .fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
@@ -289,6 +289,44 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 .c-lc{background:#e8f5e0;color:#2d6b1a}.c-nt{background:#fff8e0;color:#8a6a00}
 .c-vu{background:#fff0d0;color:#a05000}.c-en{background:#ffe8d8;color:#b03000}
 .c-cr{background:#ffd8d8;color:#b00000}
+
+/* FIELD GUIDE TABS */
+.fg-tabs{display:flex;overflow-x:auto;background:white;border-bottom:2px solid var(--mist);padding:0 26px;gap:0}
+.fg-tab{padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.fg-tab.active{color:var(--moss);border-bottom-color:var(--moss);font-weight:600}
+.fg-tab:hover:not(.active){color:var(--ink)}
+.fg-body{padding:20px 26px 28px}
+.fg-section{margin-bottom:20px}
+.fg-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--moss);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:7px}
+.fg-overview{font-size:14px;line-height:1.9;color:#3e3428}
+.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fg-fact{background:white;border:1px solid var(--mist);border-radius:2px;padding:12px 14px}
+.fg-fact.full{grid-column:1/-1}
+.fg-fact-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:4px}
+.fg-fact-val{font-size:13px;color:var(--ink);line-height:1.6}
+.fg-highlight{background:#f0f8ec;border:1px solid #c8ddb8;border-radius:2px;padding:14px 16px;margin-top:14px}
+.fg-highlight-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--moss);margin-bottom:6px;font-weight:600}
+.fg-highlight-val{font-size:13px;color:#2a3820;line-height:1.75}
+.fg-tip-list{display:flex;flex-direction:column;gap:0}
+.fg-tip{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--mist);font-size:13px;color:#3e3428;line-height:1.65}
+.fg-tip:last-child{border-bottom:none}
+.fg-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--moss);flex-shrink:0;margin-top:7px}
+.fg-state-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.fg-state-chip{background:var(--cream);border:1px solid var(--mist);border-radius:2px;padding:3px 8px;font-size:11px;color:var(--ink)}
+.fg-cons-row{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.fg-trend-up{color:#2d6b1a;background:#e8f5e0;padding:3px 9px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.fg-trend-down{color:#b03000;background:#ffe8d8;padding:3px 9px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.fg-trend-stable{color:#8a6a00;background:#fff8e0;padding:3px 9px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.photo-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;backdrop-filter:blur(2px);z-index:5}
+.photo-nav-btn:hover{background:rgba(0,0,0,.7)}
+.photo-counter-badge{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.5);color:white;font-size:10px;padding:3px 9px;border-radius:10px;backdrop-filter:blur(2px)}
+.photo-attr-bar{background:#111;color:rgba(255,255,255,.5);font-size:9px;padding:5px 12px;display:flex;justify-content:space-between;align-items:center;min-height:22px}
+.photo-attr-bar a{color:rgba(255,255,255,.5);text-decoration:none}
+.photo-attr-bar a:hover{color:rgba(255,255,255,.8)}
+.photo-thumbs-row{display:flex;gap:4px;padding:6px 12px 8px;background:#111;flex-wrap:wrap}
+.photo-thumb-btn{width:48px;height:38px;border-radius:2px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
+.photo-thumb-btn.active{border-color:var(--fern)}
+.photo-thumb-btn img{width:100%;height:100%;object-fit:cover}
 
 /* HABITAT MODAL SECTION */
 .habitat-section{margin-top:20px;border-top:2px solid var(--mist);padding-top:18px}
@@ -575,7 +613,7 @@ async function callClaude(system, user, maxTokens=2000) {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      model:"claude-sonnet-4-5",
+      model:"claude-sonnet-4-20250514",
       max_tokens: maxTokens,
       system,
       messages:[{role:"user",content:user}]
@@ -726,10 +764,62 @@ description: 2 vivid sentences with ID features. Return ONLY the array.`,
     setDetailLoading(true); setDetailData(null); setModalHabResult(""); setModalHabProp("backyard");
     try {
       const raw = await callClaude(
-        "You are an expert field naturalist. Return ONLY valid JSON, no markdown.",
-        `Detailed field guide for ${sp.name} (${sp.latin}).
-Return JSON: {description,habitat,range,diet,reproduction,interesting_fact,threats,conservation,similar_species,best_season}`,
-        1200
+        "You are a professional field naturalist and wildlife biologist with expertise across all US native species. Return ONLY valid JSON, no markdown, no explanation.",
+        `Create a comprehensive field guide entry for ${sp.name} (${sp.latin}), a native US species in the category: ${sp.category}.
+
+Return a single JSON object with ALL of these fields populated in detail:
+{
+  "overview": "3-4 sentence compelling introduction to this species covering what makes it distinctive and ecologically important",
+  "identification": {
+    "size": "precise measurements — length, wingspan, weight as appropriate for this species type",
+    "coloration": "detailed description of colors and patterns, including seasonal/sex/age variations",
+    "markings": "specific distinguishing marks, patterns, features that set it apart",
+    "shape": "body shape, proportions, distinctive physical features",
+    "voice": "calls, songs, or sounds if applicable — describe precisely",
+    "seasonal_variation": "how appearance changes by season if applicable"
+  },
+  "range": {
+    "native_states": "comprehensive list of US states where this species is native",
+    "core_range": "description of where it is most commonly found",
+    "migration": "migration patterns if applicable, or year-round resident status",
+    "elevation": "elevation range if applicable"
+  },
+  "habitat": {
+    "preferred": "detailed preferred habitat description",
+    "microhabitat": "specific microhabitat requirements within broader habitat",
+    "nesting_denning": "nesting, denning, or roosting specifics",
+    "territory": "territory size and behavior if applicable"
+  },
+  "behavior": {
+    "activity": "daily and seasonal activity patterns",
+    "feeding": "detailed diet and feeding behavior",
+    "social": "social structure, group behavior, interactions",
+    "defense": "defense mechanisms, predator avoidance"
+  },
+  "reproduction": {
+    "season": "breeding/flowering season with specific months",
+    "courtship": "courtship behavior or pollination mechanism",
+    "young": "eggs/seeds/young — numbers, incubation/gestation, development",
+    "lifespan": "typical lifespan in wild and captivity if known"
+  },
+  "conservation": {
+    "status": "LC or NT or VU or EN or CR",
+    "population_trend": "increasing, stable, or decreasing",
+    "threats": "detailed current threats",
+    "protected": "any legal protections or special status by state",
+    "what_you_can_do": "specific actions observers can take to help"
+  },
+  "field_notes": {
+    "best_time": "best time of day and year to observe",
+    "best_places": "types of places most likely to find this species in the US",
+    "tips": "3-4 expert field identification tips",
+    "similar_species": "2-3 most commonly confused species and exactly how to tell them apart",
+    "interesting_fact": "one remarkable or surprising fact about this species"
+  }
+}
+
+Be thorough and scientifically accurate. Every field must be populated with real, specific information.`,
+        2500
       );
       setDetailData(JSON.parse(raw.replace(/```json|```/g,"").trim()));
     } catch(e) { setDetailData(null); }
@@ -877,6 +967,8 @@ Use this format - just a numbered list, no headers, each item 1-2 sentences:
     setModalHabLoading(false);
   }
 
+  const [detailTab, setDetailTab] = useState("overview");
+
   function openModal(sp) {
     setSelected(sp);
     setDetailData(null);
@@ -884,6 +976,7 @@ Use this format - just a numbered list, no headers, each item 1-2 sentences:
     setGbifData(null);
     setActivePhoto(0);
     setModalHabResult("");
+    setDetailTab("overview");
     // Fire all three data sources in parallel
     fetchDetail(sp);
     fetchInatPhotos(sp);
@@ -1007,7 +1100,7 @@ IUCN/NatureServe status and any population trend notes.`;
       const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 1200, system: systemPrompt, messages })
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1200, system: systemPrompt, messages })
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
@@ -1546,203 +1639,344 @@ IUCN/NatureServe status and any population trend notes.`;
       )}
 
       {/* ══ MODAL ════════════════════════════════════════════════════════ */}
-      {selected && (
-        <div className="overlay" onClick={()=>setSelected(null)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
+      {selected && (() => {
+        const cm = getCatMeta(selected.category);
+        const d = detailData;
+        const TABS_FG = [
+          {id:"overview", label:"Overview"},
+          {id:"identification", label:"Identification"},
+          {id:"range", label:"Range & Habitat"},
+          {id:"behavior", label:"Behavior"},
+          {id:"reproduction", label:"Reproduction"},
+          {id:"conservation", label:"Conservation"},
+          {id:"fieldnotes", label:"Field Notes"},
+        ];
+        return (
+          <div className="overlay" onClick={()=>setSelected(null)}>
+            <div className="modal" onClick={e=>e.stopPropagation()}>
 
-            {/* ── PHOTO GALLERY ── */}
-            <div className="photo-gallery">
-              <div className="photo-main">
+              {/* PHOTO GALLERY */}
+              <div style={{position:"relative",height:260,background:"#111",overflow:"hidden"}}>
                 {inatLoading && !inatPhotos.length ? (
-                  <div className="photo-main-ph">
-                    <div className="photo-main-ph-icon">{getCatMeta(selected.category).icon}</div>
-                    <div className="photo-main-ph-text">Loading photos…</div>
+                  <div className="modal-ph" style={{background:cm.color+"18"}}>
+                    <span>{cm.icon}</span>
                   </div>
                 ) : inatPhotos.length > 0 ? (
-                  <>
-                    <img src={inatPhotos[activePhoto]?.url} alt={selected.name}
-                      onError={e=>{ e.target.style.display="none"; }}/>
-                    {inatPhotos.length > 1 && <>
-                      <button className="photo-nav photo-nav-prev"
-                        onClick={()=>setActivePhoto(i=>Math.max(0,i-1))}>‹</button>
-                      <button className="photo-nav photo-nav-next"
-                        onClick={()=>setActivePhoto(i=>Math.min(inatPhotos.length-1,i+1))}>›</button>
-                      <div className="photo-counter">{activePhoto+1} / {inatPhotos.length}</div>
-                    </>}
-                  </>
+                  <img src={inatPhotos[activePhoto]?.url} alt={selected.name}
+                    style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+                    onError={e=>{ e.target.style.display="none"; }}/>
                 ) : (
-                  <div className="photo-main-ph">
-                    <div className="photo-main-ph-icon">{getCatMeta(selected.category).icon}</div>
-                    <div className="photo-main-ph-text">No photos found</div>
+                  <div className="modal-ph" style={{background:cm.color+"18"}}>
+                    <span>{cm.icon}</span>
                   </div>
                 )}
+                {inatPhotos.length > 1 && <>
+                  <button className="photo-nav-btn" style={{left:10}}
+                    onClick={()=>setActivePhoto(i=>Math.max(0,i-1))}>‹</button>
+                  <button className="photo-nav-btn" style={{right:10}}
+                    onClick={()=>setActivePhoto(i=>Math.min(inatPhotos.length-1,i+1))}>›</button>
+                  <div className="photo-counter-badge">{activePhoto+1} / {inatPhotos.length}</div>
+                </>}
               </div>
+
+              {/* Photo attribution + thumbs */}
               {inatPhotos.length > 0 && (
-                <div className="photo-attr">
-                  <span>{inatPhotos[activePhoto]?.attribution?.replace(/\(c\)/gi,"©")?.slice(0,60)}</span>
-                  <a href={inatPhotos[activePhoto]?.obsUrl} target="_blank" rel="noopener noreferrer">
-                    View on iNaturalist ↗
-                  </a>
+                <div>
+                  <div className="photo-attr-bar">
+                    <span>{inatPhotos[activePhoto]?.attribution?.replace(/\(c\)/gi,"©")?.slice(0,55)}</span>
+                    <a href={inatPhotos[activePhoto]?.obsUrl} target="_blank" rel="noopener noreferrer">
+                      iNaturalist ↗
+                    </a>
+                  </div>
+                  {inatPhotos.length > 1 && (
+                    <div className="photo-thumbs-row">
+                      {inatPhotos.map((p,i)=>(
+                        <div key={i} className={`photo-thumb-btn${activePhoto===i?" active":""}`}
+                          onClick={()=>setActivePhoto(i)}>
+                          <img src={p.url?.replace("medium","square")||p.url} alt=""
+                            onError={e=>e.target.style.display="none"}/>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
 
-            {/* Thumbnail strip */}
-            {inatPhotos.length > 1 && (
-              <div style={{padding:"8px 16px 0",background:"#111"}}>
-                <div className="photo-thumbs">
-                  {inatPhotos.map((p,i)=>(
-                    <div key={i} className={`photo-thumb${activePhoto===i?" active":""}`}
-                      onClick={()=>setActivePhoto(i)}>
-                      <img src={p.url?.replace("medium","thumb")||p.url} alt="" onError={e=>e.target.style.display="none"}/>
+              {/* Close button */}
+              <button className="modal-close" onClick={()=>setSelected(null)}>✕</button>
+
+              {/* Header */}
+              <div className="modal-hdr">
+                <div className="cpill" style={{marginBottom:8}}>{cm.icon} {cm.label}</div>
+                {d?.conservation?.status && <ConsBadge status={d.conservation.status}/>}
+                <div className="modal-name">{selected.name}</div>
+                <div className="modal-latin">{selected.latin}</div>
+
+                {/* Field Guide Tabs */}
+                <div className="fg-tabs">
+                  {TABS_FG.map(t=>(
+                    <div key={t.id}
+                      className={`fg-tab${detailTab===t.id?" active":""}`}
+                      onClick={()=>setDetailTab(t.id)}>
+                      {t.label}
                     </div>
                   ))}
                 </div>
-                <div className="inat-credit" style={{paddingBottom:8}}>
-                  📷 Photos from{" "}
-                  <a href={`https://www.inaturalist.org/taxa/search?q=${encodeURIComponent(selected.latin)}`}
-                    target="_blank" rel="noopener noreferrer">iNaturalist</a>
-                  {" "}· Research-grade observations
-                </div>
               </div>
-            )}
 
-            <button className="modal-close" onClick={()=>setSelected(null)}>✕</button>
-            <div className="modal-hdr">
-              <div className="cpill" style={{marginBottom:9}}>{getCatMeta(selected.category).icon} {getCatMeta(selected.category).label}</div>
-              {(detailData?.conservation||selected.conservation)&&<ConsBadge status={detailData?.conservation||selected.conservation}/>}
-              <div className="modal-name">{selected.name}</div>
-              <div className="modal-latin">{selected.latin}</div>
-            </div>
-            <div className="modal-body">
-              {detailLoading&&!detailData ? (
-                <div style={{textAlign:"center",padding:"26px 0",color:"var(--stone)"}}><Spinner/>Loading field notes…</div>
-              ) : detailData ? (<>
-                <div className="modal-desc">{detailData.description}</div>
-                <div className="fact-grid">
-                  {detailData.habitat&&<div className="fact"><div className="fact-lbl">Habitat</div><div className="fact-val">{detailData.habitat}</div></div>}
-                  {detailData.diet&&<div className="fact"><div className="fact-lbl">Diet / Nutrition</div><div className="fact-val">{detailData.diet}</div></div>}
-                  {detailData.reproduction&&<div className="fact"><div className="fact-lbl">Reproduction</div><div className="fact-val">{detailData.reproduction}</div></div>}
-                  {detailData.best_season&&<div className="fact"><div className="fact-lbl">Best Season</div><div className="fact-val">{detailData.best_season}</div></div>}
-                  {selected.size&&<div className="fact"><div className="fact-lbl">Size</div><div className="fact-val">{selected.size}</div></div>}
-                  {detailData.similar_species&&<div className="fact" style={{gridColumn:"1/-1"}}><div className="fact-lbl">Similar Species</div><div className="fact-val" style={{fontSize:13}}>{detailData.similar_species}</div></div>}
-                  {detailData.interesting_fact&&<div className="did-you-know" style={{gridColumn:"1/-1"}}><div className="fact-lbl">Did You Know?</div><div style={{fontSize:13,lineHeight:1.7,marginTop:4}}>{detailData.interesting_fact}</div></div>}
-                  {detailData.threats&&<div className="fact" style={{gridColumn:"1/-1"}}><div className="fact-lbl">Conservation Threats</div><div className="fact-val" style={{fontSize:13}}>{detailData.threats}</div></div>}
-                </div>
-                {detailData.range&&<div style={{marginBottom:18}}><div className="fact-lbl" style={{marginBottom:6}}>Native Range</div><div style={{fontSize:13,color:"#4a3e2c",lineHeight:1.65}}>{detailData.range}</div></div>}
-
-                {/* ── GBIF OCCURRENCE DATA ── */}
-                <div className="gbif-section">
-                  <div className="gbif-title">📍 Occurrence Data <span style={{fontSize:11,fontWeight:400,color:var_stone,fontFamily:"'DM Sans',sans-serif"}}>via GBIF</span></div>
-                  {gbifLoading && !gbifData ? (
-                    <div style={{color:"var(--stone)",fontSize:12,padding:"8px 0"}}><Spinner/>Loading occurrence records…</div>
-                  ) : gbifData ? (<>
-                    <div className="gbif-stats">
-                      <div className="gbif-stat">
-                        <div className="gbif-stat-num">{gbifData.totalOccurrences.toLocaleString()}</div>
-                        <div className="gbif-stat-lbl">US Records</div>
-                      </div>
-                      <div className="gbif-stat">
-                        <div className="gbif-stat-num">{gbifData.topStates.length}</div>
-                        <div className="gbif-stat-lbl">States Found</div>
-                      </div>
-                      <div className="gbif-stat">
-                        <div className="gbif-stat-num">{gbifData.recentSightings.length > 0 ? gbifData.recentSightings[0].date?.slice(0,4)||"—" : "—"}</div>
-                        <div className="gbif-stat-lbl">Last Seen</div>
-                      </div>
-                    </div>
-
-                    {gbifData.topStates.length > 0 && <>
-                      <div className="gbif-sub-label">Top States by Sightings</div>
-                      <div className="state-bars">
-                        {gbifData.topStates.map((s,i)=>{
-                          const max = gbifData.topStates[0].count;
-                          const pct = Math.round((s.count/max)*100);
-                          return (
-                            <div key={i} className="state-bar-row">
-                              <div className="state-bar-name">{s.state}</div>
-                              <div className="state-bar-track">
-                                <div className="state-bar-fill" style={{width:`${pct}%`}}/>
-                              </div>
-                              <div className="state-bar-count">{s.count.toLocaleString()}</div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </>}
-
-                    {gbifData.recentSightings.length > 0 && <>
-                      <div className="gbif-sub-label" style={{marginTop:14}}>Recent Sightings</div>
-                      <div className="gbif-recent">
-                        {gbifData.recentSightings.map((s,i)=>(
-                          <div key={i} className="recent-sighting">
-                            <div className="recent-dot"/>
-                            <div className="recent-body">
-                              <div className="recent-place">{s.place}</div>
-                              <div className="recent-meta">
-                                {s.date} · {s.recorder}
-                                {s.lat && <> · {s.lat.toFixed(2)}°N {Math.abs(s.lng).toFixed(2)}°W</>}
-                                {" · "}<a href={s.gbifUrl} target="_blank" rel="noopener noreferrer">View record ↗</a>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>}
-
-                    <div className="gbif-footer">
-                      Data from the{" "}
-                      <a href={`https://www.gbif.org/species/${gbifData.usKey}`} target="_blank" rel="noopener noreferrer">
-                        Global Biodiversity Information Facility (GBIF)
-                      </a>
-                      {" "}· Open access occurrence records
-                    </div>
-                  </>) : (
-                    <div style={{fontSize:12,color:"var(--stone)"}}>No occurrence data found for this species.</div>
-                  )}
-                </div>
-
-                {/* Inline Habitat Tips */}
-                <div className="habitat-section">
-                  <div className="habitat-section-title">🌿 Habitat Tips for This Species</div>
-                  <div className="habitat-section-sub">Choose your property type to get quick improvement recommendations</div>
-                  <div className="habitat-quick-btns">
-                    {PROPERTY_TYPES.map(p=>(
-                      <div key={p.id}
-                        className={`hq-btn${modalHabProp===p.id?" active":""}`}
-                        onClick={()=>{ setModalHabProp(p.id); setModalHabResult(""); }}>
-                        {p.icon} {p.label.split("/")[0].trim()}
-                      </div>
-                    ))}
+              {/* Tab Content */}
+              <div className="fg-body">
+                {detailLoading && !d ? (
+                  <div style={{textAlign:"center",padding:"32px 0",color:"var(--stone)"}}>
+                    <Spinner/>Loading field guide data…
                   </div>
-                  <button className="advisor-btn" style={{marginBottom:12,padding:"8px 18px",fontSize:10}}
-                    onClick={()=>fetchModalHabitat(selected, modalHabProp)} disabled={modalHabLoading}>
-                    {modalHabLoading?<><Spinner teal/>Loading…</>:"Get Habitat Tips"}
-                  </button>
-                  {modalHabResult && (
-                    <div className="habitat-result">
-                      {modalHabResult.split("\n").filter(l=>l.trim()).map((line,i)=>(
-                        <div key={i} className="action-item">
-                          <div className="action-dot"/>
-                          <div className="action-text">{line.replace(/^\d+\.\s*/,"")}</div>
+                ) : d ? (<>
+
+                  {/* ── OVERVIEW ── */}
+                  {detailTab==="overview" && (
+                    <div>
+                      <div className="fg-overview">{d.overview}</div>
+                      <div className="fg-grid">
+                        {selected.size && <div className="fg-fact"><div className="fg-fact-lbl">Size</div><div className="fg-fact-val">{selected.size}</div></div>}
+                        {d.identification?.size && <div className="fg-fact"><div className="fg-fact-lbl">Measurements</div><div className="fg-fact-val">{d.identification.size}</div></div>}
+                        {selected.season && <div className="fg-fact"><div className="fg-fact-lbl">Active Season</div><div className="fg-fact-val">{selected.season}</div></div>}
+                        {d.field_notes?.best_time && <div className="fg-fact"><div className="fg-fact-lbl">Best Time to Observe</div><div className="fg-fact-val">{d.field_notes.best_time}</div></div>}
+                        {selected.habitat && <div className="fg-fact full"><div className="fg-fact-lbl">Habitat</div><div className="fg-fact-val">{selected.habitat}</div></div>}
+                      </div>
+                      {d.field_notes?.interesting_fact && (
+                        <div className="fg-highlight">
+                          <div className="fg-highlight-lbl">🌿 Did You Know?</div>
+                          <div className="fg-highlight-val">{d.field_notes.interesting_fact}</div>
                         </div>
-                      ))}
-                      <div style={{marginTop:14,paddingTop:12,borderTop:"1px solid #e0f0e8"}}>
-                        <button className="advisor-btn" style={{fontSize:10,padding:"6px 14px",background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)"}}
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── IDENTIFICATION ── */}
+                  {detailTab==="identification" && d.identification && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title">🔍 Physical Description</div>
+                        <div className="fg-grid">
+                          {d.identification.size && <div className="fg-fact"><div className="fg-fact-lbl">Size &amp; Measurements</div><div className="fg-fact-val">{d.identification.size}</div></div>}
+                          {d.identification.shape && <div className="fg-fact"><div className="fg-fact-lbl">Shape &amp; Build</div><div className="fg-fact-val">{d.identification.shape}</div></div>}
+                          {d.identification.coloration && <div className="fg-fact full"><div className="fg-fact-lbl">Coloration</div><div className="fg-fact-val">{d.identification.coloration}</div></div>}
+                          {d.identification.markings && <div className="fg-fact full"><div className="fg-fact-lbl">Distinctive Markings</div><div className="fg-fact-val">{d.identification.markings}</div></div>}
+                          {d.identification.seasonal_variation && <div className="fg-fact full"><div className="fg-fact-lbl">Seasonal Variation</div><div className="fg-fact-val">{d.identification.seasonal_variation}</div></div>}
+                          {d.identification.voice && <div className="fg-fact full"><div className="fg-fact-lbl">Voice / Calls / Sounds</div><div className="fg-fact-val">{d.identification.voice}</div></div>}
+                        </div>
+                      </div>
+                      {d.field_notes?.similar_species && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">⚠️ Similar Species</div>
+                          <div className="fg-fact full" style={{marginTop:0}}>
+                            <div className="fg-fact-val">{d.field_notes.similar_species}</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── RANGE & HABITAT ── */}
+                  {detailTab==="range" && (
+                    <div>
+                      {d.range && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">📍 Native Range</div>
+                          <div className="fg-grid">
+                            {d.range.core_range && <div className="fg-fact full"><div className="fg-fact-lbl">Core Range</div><div className="fg-fact-val">{d.range.core_range}</div></div>}
+                            {d.range.migration && <div className="fg-fact full"><div className="fg-fact-lbl">Migration / Resident Status</div><div className="fg-fact-val">{d.range.migration}</div></div>}
+                            {d.range.elevation && <div className="fg-fact"><div className="fg-fact-lbl">Elevation Range</div><div className="fg-fact-val">{d.range.elevation}</div></div>}
+                          </div>
+                          {d.range.native_states && (
+                            <div style={{marginTop:12}}>
+                              <div className="fg-fact-lbl" style={{marginBottom:8}}>Native States</div>
+                              <div className="fg-state-chips">
+                                {d.range.native_states.split(/,|;/).map((s,i)=>(
+                                  <span key={i} className="fg-state-chip">{s.trim()}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {d.habitat && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">🏕 Habitat Requirements</div>
+                          <div className="fg-grid">
+                            {d.habitat.preferred && <div className="fg-fact full"><div className="fg-fact-lbl">Preferred Habitat</div><div className="fg-fact-val">{d.habitat.preferred}</div></div>}
+                            {d.habitat.microhabitat && <div className="fg-fact full"><div className="fg-fact-lbl">Microhabitat</div><div className="fg-fact-val">{d.habitat.microhabitat}</div></div>}
+                            {d.habitat.nesting_denning && <div className="fg-fact full"><div className="fg-fact-lbl">Nesting / Denning / Roosting</div><div className="fg-fact-val">{d.habitat.nesting_denning}</div></div>}
+                            {d.habitat.territory && <div className="fg-fact full"><div className="fg-fact-lbl">Territory</div><div className="fg-fact-val">{d.habitat.territory}</div></div>}
+                          </div>
+                        </div>
+                      )}
+                      {/* GBIF occurrence data */}
+                      {gbifData && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">📊 Occurrence Records <span style={{fontSize:11,fontWeight:400,color:"var(--stone)",fontFamily:"'DM Sans',sans-serif"}}>via GBIF</span></div>
+                          <div className="fg-grid">
+                            <div className="fg-fact"><div className="fg-fact-lbl">US Records</div><div className="fg-fact-val" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:"var(--moss)"}}>{gbifData.totalOccurrences.toLocaleString()}</div></div>
+                            <div className="fg-fact"><div className="fg-fact-lbl">Last Recorded</div><div className="fg-fact-val" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:"var(--moss)"}}>{gbifData.recentSightings[0]?.date?.slice(0,4)||"—"}</div></div>
+                          </div>
+                          {gbifData.topStates.length > 0 && (
+                            <div style={{marginTop:10}}>
+                              <div className="fg-fact-lbl" style={{marginBottom:8}}>Top States by Records</div>
+                              {gbifData.topStates.map((s,i)=>{
+                                const max = gbifData.topStates[0].count;
+                                return (
+                                  <div key={i} className="state-bar-row">
+                                    <div className="state-bar-name">{s.state}</div>
+                                    <div className="state-bar-track"><div className="state-bar-fill" style={{width:`${Math.round((s.count/max)*100)}%`}}/></div>
+                                    <div className="state-bar-count">{s.count.toLocaleString()}</div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── BEHAVIOR ── */}
+                  {detailTab==="behavior" && d.behavior && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title">🦎 Behavior &amp; Ecology</div>
+                        <div className="fg-grid">
+                          {d.behavior.activity && <div className="fg-fact full"><div className="fg-fact-lbl">Activity Patterns</div><div className="fg-fact-val">{d.behavior.activity}</div></div>}
+                          {d.behavior.feeding && <div className="fg-fact full"><div className="fg-fact-lbl">Diet &amp; Feeding</div><div className="fg-fact-val">{d.behavior.feeding}</div></div>}
+                          {d.behavior.social && <div className="fg-fact full"><div className="fg-fact-lbl">Social Behavior</div><div className="fg-fact-val">{d.behavior.social}</div></div>}
+                          {d.behavior.defense && <div className="fg-fact full"><div className="fg-fact-lbl">Defense &amp; Predator Avoidance</div><div className="fg-fact-val">{d.behavior.defense}</div></div>}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── REPRODUCTION ── */}
+                  {detailTab==="reproduction" && d.reproduction && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title">🥚 Reproduction &amp; Life Cycle</div>
+                        <div className="fg-grid">
+                          {d.reproduction.season && <div className="fg-fact full"><div className="fg-fact-lbl">Breeding / Flowering Season</div><div className="fg-fact-val">{d.reproduction.season}</div></div>}
+                          {d.reproduction.courtship && <div className="fg-fact full"><div className="fg-fact-lbl">Courtship / Pollination</div><div className="fg-fact-val">{d.reproduction.courtship}</div></div>}
+                          {d.reproduction.young && <div className="fg-fact full"><div className="fg-fact-lbl">Young / Seeds / Eggs</div><div className="fg-fact-val">{d.reproduction.young}</div></div>}
+                          {d.reproduction.lifespan && <div className="fg-fact"><div className="fg-fact-lbl">Lifespan</div><div className="fg-fact-val">{d.reproduction.lifespan}</div></div>}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── CONSERVATION ── */}
+                  {detailTab==="conservation" && d.conservation && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title">🛡 Conservation Status</div>
+                        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+                          {d.conservation.status && <ConsBadge status={d.conservation.status}/>}
+                          {d.conservation.population_trend && (
+                            <span className={
+                              d.conservation.population_trend.toLowerCase().includes("increas") ? "fg-trend-up" :
+                              d.conservation.population_trend.toLowerCase().includes("decreas") ? "fg-trend-down" :
+                              "fg-trend-stable"
+                            }>
+                              {d.conservation.population_trend.toLowerCase().includes("increas") ? "▲ " :
+                               d.conservation.population_trend.toLowerCase().includes("decreas") ? "▼ " : "● "}
+                              {d.conservation.population_trend}
+                            </span>
+                          )}
+                        </div>
+                        <div className="fg-grid">
+                          {d.conservation.threats && <div className="fg-fact full"><div className="fg-fact-lbl">Current Threats</div><div className="fg-fact-val">{d.conservation.threats}</div></div>}
+                          {d.conservation.protected && <div className="fg-fact full"><div className="fg-fact-lbl">Legal Protections</div><div className="fg-fact-val">{d.conservation.protected}</div></div>}
+                        </div>
+                        {d.conservation.what_you_can_do && (
+                          <div className="fg-highlight">
+                            <div className="fg-highlight-lbl">What You Can Do</div>
+                            <div className="fg-highlight-val">{d.conservation.what_you_can_do}</div>
+                          </div>
+                        )}
+                      </div>
+                      <div style={{marginTop:16,textAlign:"center"}}>
+                        <button className="advisor-btn"
                           onClick={()=>{ setTab("Habitat Advisor"); setHabSpecies(selected.name); setSelected(null); }}>
-                          → Open Full Habitat Plan in Advisor
+                          🌿 Open Habitat Improvement Plan
                         </button>
                       </div>
                     </div>
                   )}
-                </div>
-              </>) : (
-                <div className="modal-desc">{selected.description}</div>
-              )}
+
+                  {/* ── FIELD NOTES ── */}
+                  {detailTab==="fieldnotes" && d.field_notes && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title">📓 Expert Field Notes</div>
+                        <div className="fg-grid">
+                          {d.field_notes.best_time && <div className="fg-fact full"><div className="fg-fact-lbl">Best Time to Observe</div><div className="fg-fact-val">{d.field_notes.best_time}</div></div>}
+                          {d.field_notes.best_places && <div className="fg-fact full"><div className="fg-fact-lbl">Best Places to Find</div><div className="fg-fact-val">{d.field_notes.best_places}</div></div>}
+                        </div>
+                      </div>
+                      {d.field_notes.tips && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">💡 Identification Tips</div>
+                          <div className="fg-tip-list">
+                            {d.field_notes.tips.split(/\.\s+|\n/).filter(t=>t.trim().length>10).map((tip,i)=>(
+                              <div key={i} className="fg-tip">
+                                <div className="fg-tip-dot"/>
+                                <div>{tip.trim()}{tip.trim().endsWith(".")?"":" ."}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {d.field_notes.similar_species && (
+                        <div className="fg-section">
+                          <div className="fg-section-title">⚠️ Telling Apart Similar Species</div>
+                          <div className="fg-fact full" style={{marginTop:0}}>
+                            <div className="fg-fact-val">{d.field_notes.similar_species}</div>
+                          </div>
+                        </div>
+                      )}
+                      {/* Habitat tips */}
+                      <div className="fg-section">
+                        <div className="fg-section-title">🌿 Habitat Tips</div>
+                        <div className="habitat-quick-btns">
+                          {PROPERTY_TYPES.map(p=>(
+                            <div key={p.id}
+                              className={`hq-btn${modalHabProp===p.id?" active":""}`}
+                              onClick={()=>{ setModalHabProp(p.id); setModalHabResult(""); }}>
+                              {p.icon} {p.label.split("/")[0].trim()}
+                            </div>
+                          ))}
+                        </div>
+                        <button className="advisor-btn" style={{marginBottom:10,padding:"8px 16px",fontSize:10}}
+                          onClick={()=>fetchModalHabitat(selected, modalHabProp)} disabled={modalHabLoading}>
+                          {modalHabLoading?<><Spinner teal/>Loading…</>:"Get Habitat Tips"}
+                        </button>
+                        {modalHabResult && (
+                          <div className="habitat-result">
+                            {modalHabResult.split("\n").filter(l=>l.trim()).map((line,i)=>(
+                              <div key={i} className="action-item">
+                                <div className="action-dot"/>
+                                <div className="action-text">{line.replace(/^\d+\.\s*/,"")}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                </>) : (
+                  <div style={{fontSize:13,color:"var(--stone)",lineHeight:1.7}}>{selected.description}</div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
