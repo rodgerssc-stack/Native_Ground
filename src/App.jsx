@@ -945,13 +945,14 @@ Return this exact JSON with all fields filled in:
   const [cardPhotos, setCardPhotos] = useState({});
 
   async function fetchCardPhotos(speciesList) {
-    // Fetch one photo per species using iNaturalist taxon default photo
     const newPhotos = {};
     await Promise.all(speciesList.map(async (sp) => {
       try {
         const res = await fetch(
-          `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`
+          `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`,
+          { headers: { "Accept": "application/json" } }
         );
+        if (!res.ok) return;
         const data = await res.json();
         const taxon = data.results?.[0];
         if (taxon?.default_photo?.medium_url) {
@@ -959,7 +960,9 @@ Return this exact JSON with all fields filled in:
         } else if (taxon?.default_photo?.square_url) {
           newPhotos[sp.latin] = taxon.default_photo.square_url.replace("square","medium");
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Card photo error for", sp.latin, e);
+      }
     }));
     setCardPhotos(prev => ({...prev, ...newPhotos}));
   }
@@ -967,51 +970,58 @@ Return this exact JSON with all fields filled in:
   async function fetchInatPhotos(sp) {
     setInatLoading(true); setInatPhotos([]); setActivePhoto(0);
     try {
-      // Search for the taxon by Latin name
       const taxonRes = await fetch(
-        `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`
+        `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`,
+        { headers: { "Accept": "application/json" } }
       );
+      if (!taxonRes.ok) { setInatLoading(false); return; }
       const taxonData = await taxonRes.json();
       const taxon = taxonData.results?.[0];
       if (!taxon) { setInatLoading(false); return; }
 
-      // Fetch observations with photos, quality_grade research
-      const obsRes = await fetch(
-        `https://api.inaturalist.org/v1/observations?taxon_id=${taxon.id}&quality_grade=research&photos=true&per_page=8&order_by=votes`
-      );
-      const obsData = await obsRes.json();
       const photos = [];
-      for (const obs of obsData.results || []) {
-        for (const photo of obs.photos || []) {
-          const url = photo.url?.replace("square", "medium");
-          if (url && !photos.find(p => p.url === url)) {
-            photos.push({
-              url,
-              attribution: photo.attribution || "",
-              observer: obs.user?.login || "iNaturalist",
-              place: obs.place_guess || "",
-              date: obs.observed_on || "",
-              obsUrl: `https://www.inaturalist.org/observations/${obs.id}`,
-            });
-          }
-        }
-        if (photos.length >= 6) break;
-      }
 
-      // Also grab the taxon default photo
+      // Get taxon default photo first
       if (taxon.default_photo?.medium_url) {
-        const def = {
+        photos.push({
           url: taxon.default_photo.medium_url,
           attribution: taxon.default_photo.attribution || "",
           observer: "iNaturalist",
           place: "", date: "",
           obsUrl: `https://www.inaturalist.org/taxa/${taxon.id}`,
-        };
-        if (!photos.find(p => p.url === def.url)) photos.unshift(def);
+        });
+      }
+
+      // Get additional research-grade observation photos
+      const obsRes = await fetch(
+        `https://api.inaturalist.org/v1/observations?taxon_id=${taxon.id}&quality_grade=research&photos=true&per_page=6&order_by=votes`,
+        { headers: { "Accept": "application/json" } }
+      );
+      if (obsRes.ok) {
+        const obsData = await obsRes.json();
+        for (const obs of obsData.results || []) {
+          for (const photo of obs.photos || []) {
+            const url = photo.url?.replace("square", "medium");
+            if (url && !photos.find(p => p.url === url)) {
+              photos.push({
+                url,
+                attribution: photo.attribution || "",
+                observer: obs.user?.login || "iNaturalist",
+                place: obs.place_guess || "",
+                date: obs.observed_on || "",
+                obsUrl: `https://www.inaturalist.org/observations/${obs.id}`,
+              });
+            }
+          }
+          if (photos.length >= 6) break;
+        }
       }
 
       setInatPhotos(photos);
-    } catch(e) { setInatPhotos([]); }
+    } catch(e) {
+      console.error("iNat photo error:", e);
+      setInatPhotos([]);
+    }
     setInatLoading(false);
   }
 
