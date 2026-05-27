@@ -1166,9 +1166,13 @@ For each section, give specific, actionable recommendations appropriate for ${ha
   }
 
   async function runAI() {
-    const hasImage = aiMode === "photo" && aiImage;
+    const hasImage = aiMode === "photo" && aiImage && aiImage.base64 && aiImage.base64.length > 0;
     const hasText  = aiMode === "text"  && aiQuery.trim();
     if ((!hasImage && !hasText) || aiLoading) return;
+    if (aiMode === "photo" && !hasImage) {
+      setAiResult("Please upload a photo before clicking Identify.");
+      return;
+    }
     if (!isPro && aiUsageCount >= FREE_AI_LIMIT) { openUpgrade(); return; }
     setAiLoading(true); setAiResult("");
     setAiUsageCount(c => c + 1);
