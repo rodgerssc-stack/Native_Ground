@@ -877,65 +877,67 @@ Return ONLY the array.`,
     setDetailLoading(true); setDetailData(null); setModalHabResult(""); setModalHabProp("backyard");
     try {
       const raw = await callClaude(
-        "You are a professional field naturalist and wildlife biologist with expertise across all US native species. Return ONLY valid JSON, no markdown, no explanation.",
-        `Create a comprehensive field guide entry for ${sp.name} (${sp.latin}), a native US species in the category: ${sp.category}.
+        "You are a professional field naturalist. Return ONLY valid JSON, no markdown, no explanation. Be concise but complete.",
+        `Field guide entry for ${sp.name} (${sp.latin}), category: ${sp.category}.
 
-Return a single JSON object with ALL of these fields populated in detail:
+Return this exact JSON with all fields filled in:
 {
-  "overview": "3-4 sentence compelling introduction to this species covering what makes it distinctive and ecologically important",
+  "overview": "2-3 sentences about what makes this species distinctive",
   "identification": {
-    "size": "precise measurements — length, wingspan, weight as appropriate for this species type",
-    "coloration": "detailed description of colors and patterns, including seasonal/sex/age variations",
-    "markings": "specific distinguishing marks, patterns, features that set it apart",
-    "shape": "body shape, proportions, distinctive physical features",
-    "voice": "calls, songs, or sounds if applicable — describe precisely",
-    "seasonal_variation": "how appearance changes by season if applicable"
+    "size": "size and measurements",
+    "coloration": "colors and patterns",
+    "markings": "distinguishing marks",
+    "shape": "body shape and features",
+    "voice": "calls or sounds if applicable",
+    "seasonal_variation": "seasonal changes if applicable"
   },
   "range": {
-    "native_states": "comprehensive list of US states where this species is native",
-    "core_range": "description of where it is most commonly found",
-    "migration": "migration patterns if applicable, or year-round resident status",
-    "elevation": "elevation range if applicable"
+    "native_states": "list of US states",
+    "core_range": "where most commonly found",
+    "migration": "migration or resident status",
+    "elevation": "elevation range"
   },
   "habitat": {
-    "preferred": "detailed preferred habitat description",
-    "microhabitat": "specific microhabitat requirements within broader habitat",
-    "nesting_denning": "nesting, denning, or roosting specifics",
-    "territory": "territory size and behavior if applicable"
+    "preferred": "preferred habitat",
+    "microhabitat": "specific microhabitat",
+    "nesting_denning": "nesting or denning details",
+    "territory": "territory information"
   },
   "behavior": {
-    "activity": "daily and seasonal activity patterns",
-    "feeding": "detailed diet and feeding behavior",
-    "social": "social structure, group behavior, interactions",
-    "defense": "defense mechanisms, predator avoidance"
+    "activity": "activity patterns",
+    "feeding": "diet and feeding",
+    "social": "social behavior",
+    "defense": "defense mechanisms"
   },
   "reproduction": {
-    "season": "breeding/flowering season with specific months",
-    "courtship": "courtship behavior or pollination mechanism",
-    "young": "eggs/seeds/young — numbers, incubation/gestation, development",
-    "lifespan": "typical lifespan in wild and captivity if known"
+    "season": "breeding season",
+    "courtship": "courtship or pollination",
+    "young": "offspring details",
+    "lifespan": "lifespan"
   },
   "conservation": {
     "status": "LC or NT or VU or EN or CR",
-    "population_trend": "increasing, stable, or decreasing",
-    "threats": "detailed current threats",
-    "protected": "any legal protections or special status by state",
-    "what_you_can_do": "specific actions observers can take to help"
+    "population_trend": "increasing or stable or decreasing",
+    "threats": "main threats",
+    "protected": "legal protections",
+    "what_you_can_do": "how to help"
   },
   "field_notes": {
-    "best_time": "best time of day and year to observe",
-    "best_places": "types of places most likely to find this species in the US",
-    "tips": "3-4 expert field identification tips",
-    "similar_species": "2-3 most commonly confused species and exactly how to tell them apart",
-    "interesting_fact": "one remarkable or surprising fact about this species"
+    "best_time": "best time to observe",
+    "best_places": "best places to find",
+    "tips": "identification tips",
+    "similar_species": "similar species and differences",
+    "interesting_fact": "one interesting fact"
   }
-}
-
-Be thorough and scientifically accurate. Every field must be populated with real, specific information.`,
-        2500
+}`,
+        3500
       );
-      setDetailData(JSON.parse(raw.replace(/```json|```/g,"").trim()));
-    } catch(e) { setDetailData(null); }
+      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      setDetailData(parsed);
+    } catch(e) {
+      console.error("fetchDetail error:", e);
+      setDetailData(null);
+    }
     setDetailLoading(false);
   }
 
