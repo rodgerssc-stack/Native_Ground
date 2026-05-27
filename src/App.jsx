@@ -2186,6 +2186,10 @@ IUCN/NatureServe status and any population trend notes.`;
                       </div>
                     </div>
                   )}
+
+                </>) : (
+                  <div style={{fontSize:13,color:"var(--stone)",lineHeight:1.7}}>{selected.description}</div>
+                )}
               </div>
             </div>
           </div>
