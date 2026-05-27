@@ -1888,20 +1888,9 @@ IUCN/NatureServe status and any population trend notes.`;
                 {d?.conservation?.status && <ConsBadge status={d.conservation.status}/>}
                 <div className="modal-name">{selected.name}</div>
                 <div className="modal-latin">{selected.latin}</div>
-
-                {/* Field Guide Tabs */}
-                <div className="fg-tabs">
-                  {TABS_FG.map(t=>(
-                    <div key={t.id}
-                      className={`fg-tab${detailTab===t.id?" active":""}`}
-                      onClick={()=>setDetailTab(t.id)}>
-                      {t.label}
-                    </div>
-                  ))}
-                </div>
               </div>
 
-              {/* Tab Content */}
+              {/* ALL CONTENT - Single scrollable page, no tabs */}
               <div className="fg-body">
                 {detailLoading && !d ? (
                   <div style={{textAlign:"center",padding:"32px 0",color:"var(--stone)"}}>
@@ -1909,18 +1898,114 @@ IUCN/NatureServe status and any population trend notes.`;
                   </div>
                 ) : d ? (<>
 
-                  {/* ── OVERVIEW ── */}
-                  {detailTab==="overview" && (
-                    <div>
+                  {/* OVERVIEW */}
+                  {d.overview && (
+                    <div className="fg-section">
                       <div className="fg-overview">{d.overview}</div>
+                    </div>
+                  )}
+
+                  {/* IDENTIFICATION */}
+                  {d.identification && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">🔍 Identification</div>
                       <div className="fg-grid">
-                        {selected.size && <div className="fg-fact"><div className="fg-fact-lbl">Size</div><div className="fg-fact-val">{selected.size}</div></div>}
-                        {d.identification?.size && <div className="fg-fact"><div className="fg-fact-lbl">Measurements</div><div className="fg-fact-val">{d.identification.size}</div></div>}
-                        {selected.season && <div className="fg-fact"><div className="fg-fact-lbl">Active Season</div><div className="fg-fact-val">{selected.season}</div></div>}
-                        {d.field_notes?.best_time && <div className="fg-fact"><div className="fg-fact-lbl">Best Time to Observe</div><div className="fg-fact-val">{d.field_notes.best_time}</div></div>}
-                        {selected.habitat && <div className="fg-fact full"><div className="fg-fact-lbl">Habitat</div><div className="fg-fact-val">{selected.habitat}</div></div>}
+                        {d.identification.size && <div className="fg-fact"><div className="fg-fact-lbl">Size &amp; Measurements</div><div className="fg-fact-val">{d.identification.size}</div></div>}
+                        {d.identification.shape && <div className="fg-fact"><div className="fg-fact-lbl">Shape &amp; Build</div><div className="fg-fact-val">{d.identification.shape}</div></div>}
+                        {d.identification.coloration && <div className="fg-fact full"><div className="fg-fact-lbl">Coloration</div><div className="fg-fact-val">{d.identification.coloration}</div></div>}
+                        {d.identification.markings && <div className="fg-fact full"><div className="fg-fact-lbl">Distinctive Markings</div><div className="fg-fact-val">{d.identification.markings}</div></div>}
+                        {d.identification.seasonal_variation && <div className="fg-fact full"><div className="fg-fact-lbl">Seasonal Variation</div><div className="fg-fact-val">{d.identification.seasonal_variation}</div></div>}
+                        {d.identification.voice && <div className="fg-fact full"><div className="fg-fact-lbl">Voice / Calls / Sounds</div><div className="fg-fact-val">{d.identification.voice}</div></div>}
                       </div>
-                      {d.field_notes?.interesting_fact && (
+                    </div>
+                  )}
+
+                  {/* RANGE & HABITAT */}
+                  {(d.range || d.habitat) && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">📍 Range &amp; Habitat</div>
+                      <div className="fg-grid">
+                        {d.range?.core_range && <div className="fg-fact full"><div className="fg-fact-lbl">Core Range</div><div className="fg-fact-val">{d.range.core_range}</div></div>}
+                        {d.range?.migration && <div className="fg-fact full"><div className="fg-fact-lbl">Migration / Resident Status</div><div className="fg-fact-val">{d.range.migration}</div></div>}
+                        {d.range?.elevation && <div className="fg-fact"><div className="fg-fact-lbl">Elevation</div><div className="fg-fact-val">{d.range.elevation}</div></div>}
+                        {d.habitat?.preferred && <div className="fg-fact full"><div className="fg-fact-lbl">Preferred Habitat</div><div className="fg-fact-val">{d.habitat.preferred}</div></div>}
+                        {d.habitat?.microhabitat && <div className="fg-fact full"><div className="fg-fact-lbl">Microhabitat</div><div className="fg-fact-val">{d.habitat.microhabitat}</div></div>}
+                        {d.habitat?.nesting_denning && <div className="fg-fact full"><div className="fg-fact-lbl">Nesting / Denning</div><div className="fg-fact-val">{d.habitat.nesting_denning}</div></div>}
+                      </div>
+                      {d.range?.native_states && (
+                        <div style={{marginTop:10}}>
+                          <div className="fg-fact-lbl" style={{marginBottom:8}}>Native States</div>
+                          <div className="fg-state-chips">
+                            {d.range.native_states.split(/,|;/).map((s,i)=>(
+                              <span key={i} className="fg-state-chip">{s.trim()}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* BEHAVIOR */}
+                  {d.behavior && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">🦎 Behavior</div>
+                      <div className="fg-grid">
+                        {d.behavior.activity && <div className="fg-fact full"><div className="fg-fact-lbl">Activity Patterns</div><div className="fg-fact-val">{d.behavior.activity}</div></div>}
+                        {d.behavior.feeding && <div className="fg-fact full"><div className="fg-fact-lbl">Diet &amp; Feeding</div><div className="fg-fact-val">{d.behavior.feeding}</div></div>}
+                        {d.behavior.social && <div className="fg-fact full"><div className="fg-fact-lbl">Social Behavior</div><div className="fg-fact-val">{d.behavior.social}</div></div>}
+                        {d.behavior.defense && <div className="fg-fact full"><div className="fg-fact-lbl">Defense &amp; Predator Avoidance</div><div className="fg-fact-val">{d.behavior.defense}</div></div>}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* REPRODUCTION */}
+                  {d.reproduction && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">🥚 Reproduction</div>
+                      <div className="fg-grid">
+                        {d.reproduction.season && <div className="fg-fact full"><div className="fg-fact-lbl">Breeding Season</div><div className="fg-fact-val">{d.reproduction.season}</div></div>}
+                        {d.reproduction.courtship && <div className="fg-fact full"><div className="fg-fact-lbl">Courtship / Pollination</div><div className="fg-fact-val">{d.reproduction.courtship}</div></div>}
+                        {d.reproduction.young && <div className="fg-fact full"><div className="fg-fact-lbl">Young / Seeds / Eggs</div><div className="fg-fact-val">{d.reproduction.young}</div></div>}
+                        {d.reproduction.lifespan && <div className="fg-fact"><div className="fg-fact-lbl">Lifespan</div><div className="fg-fact-val">{d.reproduction.lifespan}</div></div>}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CONSERVATION */}
+                  {d.conservation && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">🛡 Conservation</div>
+                      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}}>
+                        {d.conservation.status && <ConsBadge status={d.conservation.status}/>}
+                        {d.conservation.population_trend && (
+                          <span className={d.conservation.population_trend.toLowerCase().includes("increas")?"fg-trend-up":d.conservation.population_trend.toLowerCase().includes("decreas")?"fg-trend-down":"fg-trend-stable"}>
+                            {d.conservation.population_trend}
+                          </span>
+                        )}
+                      </div>
+                      <div className="fg-grid">
+                        {d.conservation.threats && <div className="fg-fact full"><div className="fg-fact-lbl">Current Threats</div><div className="fg-fact-val">{d.conservation.threats}</div></div>}
+                        {d.conservation.protected && <div className="fg-fact full"><div className="fg-fact-lbl">Legal Protections</div><div className="fg-fact-val">{d.conservation.protected}</div></div>}
+                      </div>
+                      {d.conservation.what_you_can_do && (
+                        <div className="fg-highlight">
+                          <div className="fg-highlight-lbl">What You Can Do</div>
+                          <div className="fg-highlight-val">{d.conservation.what_you_can_do}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* FIELD NOTES */}
+                  {d.field_notes && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">📓 Field Notes</div>
+                      <div className="fg-grid">
+                        {d.field_notes.best_time && <div className="fg-fact full"><div className="fg-fact-lbl">Best Time to Observe</div><div className="fg-fact-val">{d.field_notes.best_time}</div></div>}
+                        {d.field_notes.best_places && <div className="fg-fact full"><div className="fg-fact-lbl">Best Places to Find</div><div className="fg-fact-val">{d.field_notes.best_places}</div></div>}
+                        {d.field_notes.similar_species && <div className="fg-fact full"><div className="fg-fact-lbl">Similar Species</div><div className="fg-fact-val">{d.field_notes.similar_species}</div></div>}
+                      </div>
+                      {d.field_notes.interesting_fact && (
                         <div className="fg-highlight">
                           <div className="fg-highlight-lbl">🌿 Did You Know?</div>
                           <div className="fg-highlight-val">{d.field_notes.interesting_fact}</div>
@@ -1929,266 +2014,74 @@ IUCN/NatureServe status and any population trend notes.`;
                     </div>
                   )}
 
-                  {/* ── IDENTIFICATION ── */}
-                  {detailTab==="identification" && d.identification && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title">🔍 Physical Description</div>
-                        <div className="fg-grid">
-                          {d.identification.size && <div className="fg-fact"><div className="fg-fact-lbl">Size &amp; Measurements</div><div className="fg-fact-val">{d.identification.size}</div></div>}
-                          {d.identification.shape && <div className="fg-fact"><div className="fg-fact-lbl">Shape &amp; Build</div><div className="fg-fact-val">{d.identification.shape}</div></div>}
-                          {d.identification.coloration && <div className="fg-fact full"><div className="fg-fact-lbl">Coloration</div><div className="fg-fact-val">{d.identification.coloration}</div></div>}
-                          {d.identification.markings && <div className="fg-fact full"><div className="fg-fact-lbl">Distinctive Markings</div><div className="fg-fact-val">{d.identification.markings}</div></div>}
-                          {d.identification.seasonal_variation && <div className="fg-fact full"><div className="fg-fact-lbl">Seasonal Variation</div><div className="fg-fact-val">{d.identification.seasonal_variation}</div></div>}
-                          {d.identification.voice && <div className="fg-fact full"><div className="fg-fact-lbl">Voice / Calls / Sounds</div><div className="fg-fact-val">{d.identification.voice}</div></div>}
-                        </div>
+                  {/* INVASIVE SPECIFIC */}
+                  {selected.isInvasive && (selected.origin || selected.spread || selected.impact || selected.control) && (
+                    <div className="fg-section">
+                      <div className="fg-section-title" style={{color:"#b03020"}}>⚠️ Invasive Species Details</div>
+                      <div className="fg-grid">
+                        {selected.origin && <div className="fg-fact full"><div className="fg-fact-lbl">Native Origin</div><div className="fg-fact-val">{selected.origin}</div></div>}
+                        {selected.spread && <div className="fg-fact full"><div className="fg-fact-lbl">How It Spreads</div><div className="fg-fact-val">{selected.spread}</div></div>}
+                        {selected.impact && <div className="fg-fact full" style={{borderColor:"#f0c8c0",background:"#fdf0ee"}}><div className="fg-fact-lbl" style={{color:"#b03020"}}>Ecological Impact</div><div className="fg-fact-val" style={{color:"#8a2010"}}>{selected.impact}</div></div>}
+                        {selected.control && <div className="fg-fact full" style={{borderColor:"#c8ddb8",background:"#f0f8ec"}}><div className="fg-fact-lbl" style={{color:"#2d6b1a"}}>Control &amp; Removal</div><div className="fg-fact-val" style={{color:"#2a3820"}}>{selected.control}</div></div>}
                       </div>
-                      {d.field_notes?.similar_species && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">⚠️ Similar Species</div>
-                          <div className="fg-fact full" style={{marginTop:0}}>
-                            <div className="fg-fact-val">{d.field_notes.similar_species}</div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   )}
 
-                  {/* ── RANGE & HABITAT ── */}
-                  {detailTab==="range" && (
-                    <div>
-                      {d.range && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">📍 Native Range</div>
-                          <div className="fg-grid">
-                            {d.range.core_range && <div className="fg-fact full"><div className="fg-fact-lbl">Core Range</div><div className="fg-fact-val">{d.range.core_range}</div></div>}
-                            {d.range.migration && <div className="fg-fact full"><div className="fg-fact-lbl">Migration / Resident Status</div><div className="fg-fact-val">{d.range.migration}</div></div>}
-                            {d.range.elevation && <div className="fg-fact"><div className="fg-fact-lbl">Elevation Range</div><div className="fg-fact-val">{d.range.elevation}</div></div>}
-                          </div>
-                          {d.range.native_states && (
-                            <div style={{marginTop:12}}>
-                              <div className="fg-fact-lbl" style={{marginBottom:8}}>Native States</div>
-                              <div className="fg-state-chips">
-                                {d.range.native_states.split(/,|;/).map((s,i)=>(
-                                  <span key={i} className="fg-state-chip">{s.trim()}</span>
-                                ))}
+                  {/* GBIF DATA */}
+                  {gbifData && (
+                    <div className="fg-section">
+                      <div className="fg-section-title">📊 Occurrence Records <span style={{fontSize:11,fontWeight:400,color:"var(--stone)",fontFamily:"'DM Sans',sans-serif"}}>via GBIF</span></div>
+                      <div className="fg-grid">
+                        <div className="fg-fact"><div className="fg-fact-lbl">US Records</div><div className="fg-fact-val" style={{fontSize:22,fontFamily:"'Cormorant Garamond',serif",fontWeight:700,color:"var(--moss)"}}>{gbifData.totalOccurrences.toLocaleString()}</div></div>
+                        <div className="fg-fact"><div className="fg-fact-lbl">Last Recorded</div><div className="fg-fact-val" style={{fontSize:22,fontFamily:"'Cormorant Garamond',serif",fontWeight:700,color:"var(--moss)"}}>{gbifData.recentSightings[0]?.date?.slice(0,4)||"—"}</div></div>
+                      </div>
+                      {gbifData.topStates.length > 0 && (
+                        <div style={{marginTop:12}}>
+                          <div className="fg-fact-lbl" style={{marginBottom:8}}>Top States by Records</div>
+                          {gbifData.topStates.map((s,i)=>{
+                            const max = gbifData.topStates[0].count;
+                            return (
+                              <div key={i} className="state-bar-row">
+                                <div className="state-bar-name">{s.state}</div>
+                                <div className="state-bar-track"><div className="state-bar-fill" style={{width:`${Math.round((s.count/max)*100)}%`}}/></div>
+                                <div className="state-bar-count">{s.count.toLocaleString()}</div>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {d.habitat && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">🏕 Habitat Requirements</div>
-                          <div className="fg-grid">
-                            {d.habitat.preferred && <div className="fg-fact full"><div className="fg-fact-lbl">Preferred Habitat</div><div className="fg-fact-val">{d.habitat.preferred}</div></div>}
-                            {d.habitat.microhabitat && <div className="fg-fact full"><div className="fg-fact-lbl">Microhabitat</div><div className="fg-fact-val">{d.habitat.microhabitat}</div></div>}
-                            {d.habitat.nesting_denning && <div className="fg-fact full"><div className="fg-fact-lbl">Nesting / Denning / Roosting</div><div className="fg-fact-val">{d.habitat.nesting_denning}</div></div>}
-                            {d.habitat.territory && <div className="fg-fact full"><div className="fg-fact-lbl">Territory</div><div className="fg-fact-val">{d.habitat.territory}</div></div>}
-                          </div>
-                        </div>
-                      )}
-                      {/* GBIF occurrence data */}
-                      {gbifData && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">📊 Occurrence Records <span style={{fontSize:11,fontWeight:400,color:"var(--stone)",fontFamily:"'DM Sans',sans-serif"}}>via GBIF</span></div>
-                          <div className="fg-grid">
-                            <div className="fg-fact"><div className="fg-fact-lbl">US Records</div><div className="fg-fact-val" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:"var(--moss)"}}>{gbifData.totalOccurrences.toLocaleString()}</div></div>
-                            <div className="fg-fact"><div className="fg-fact-lbl">Last Recorded</div><div className="fg-fact-val" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:"var(--moss)"}}>{gbifData.recentSightings[0]?.date?.slice(0,4)||"—"}</div></div>
-                          </div>
-                          {gbifData.topStates.length > 0 && (
-                            <div style={{marginTop:10}}>
-                              <div className="fg-fact-lbl" style={{marginBottom:8}}>Top States by Records</div>
-                              {gbifData.topStates.map((s,i)=>{
-                                const max = gbifData.topStates[0].count;
-                                return (
-                                  <div key={i} className="state-bar-row">
-                                    <div className="state-bar-name">{s.state}</div>
-                                    <div className="state-bar-track"><div className="state-bar-fill" style={{width:`${Math.round((s.count/max)*100)}%`}}/></div>
-                                    <div className="state-bar-count">{s.count.toLocaleString()}</div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
+                            );
+                          })}
                         </div>
                       )}
                     </div>
                   )}
 
-                  {/* ── BEHAVIOR ── */}
-                  {detailTab==="behavior" && d.behavior && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title">🦎 Behavior &amp; Ecology</div>
-                        <div className="fg-grid">
-                          {d.behavior.activity && <div className="fg-fact full"><div className="fg-fact-lbl">Activity Patterns</div><div className="fg-fact-val">{d.behavior.activity}</div></div>}
-                          {d.behavior.feeding && <div className="fg-fact full"><div className="fg-fact-lbl">Diet &amp; Feeding</div><div className="fg-fact-val">{d.behavior.feeding}</div></div>}
-                          {d.behavior.social && <div className="fg-fact full"><div className="fg-fact-lbl">Social Behavior</div><div className="fg-fact-val">{d.behavior.social}</div></div>}
-                          {d.behavior.defense && <div className="fg-fact full"><div className="fg-fact-lbl">Defense &amp; Predator Avoidance</div><div className="fg-fact-val">{d.behavior.defense}</div></div>}
+                  {/* HABITAT TIPS */}
+                  <div className="fg-section">
+                    <div className="fg-section-title">🌿 Habitat Tips</div>
+                    <div className="habitat-quick-btns">
+                      {PROPERTY_TYPES.map(p=>(
+                        <div key={p.id} className={`hq-btn${modalHabProp===p.id?" active":""}`}
+                          onClick={()=>{ setModalHabProp(p.id); setModalHabResult(""); }}>
+                          {p.icon} {p.label.split("/")[0].trim()}
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  )}
-
-                  {/* ── REPRODUCTION ── */}
-                  {detailTab==="reproduction" && d.reproduction && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title">🥚 Reproduction &amp; Life Cycle</div>
-                        <div className="fg-grid">
-                          {d.reproduction.season && <div className="fg-fact full"><div className="fg-fact-lbl">Breeding / Flowering Season</div><div className="fg-fact-val">{d.reproduction.season}</div></div>}
-                          {d.reproduction.courtship && <div className="fg-fact full"><div className="fg-fact-lbl">Courtship / Pollination</div><div className="fg-fact-val">{d.reproduction.courtship}</div></div>}
-                          {d.reproduction.young && <div className="fg-fact full"><div className="fg-fact-lbl">Young / Seeds / Eggs</div><div className="fg-fact-val">{d.reproduction.young}</div></div>}
-                          {d.reproduction.lifespan && <div className="fg-fact"><div className="fg-fact-lbl">Lifespan</div><div className="fg-fact-val">{d.reproduction.lifespan}</div></div>}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── CONSERVATION ── */}
-                  {detailTab==="conservation" && d.conservation && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title">🛡 Conservation Status</div>
-                        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
-                          {d.conservation.status && <ConsBadge status={d.conservation.status}/>}
-                          {d.conservation.population_trend && (
-                            <span className={
-                              d.conservation.population_trend.toLowerCase().includes("increas") ? "fg-trend-up" :
-                              d.conservation.population_trend.toLowerCase().includes("decreas") ? "fg-trend-down" :
-                              "fg-trend-stable"
-                            }>
-                              {d.conservation.population_trend.toLowerCase().includes("increas") ? "▲ " :
-                               d.conservation.population_trend.toLowerCase().includes("decreas") ? "▼ " : "● "}
-                              {d.conservation.population_trend}
-                            </span>
-                          )}
-                        </div>
-                        <div className="fg-grid">
-                          {d.conservation.threats && <div className="fg-fact full"><div className="fg-fact-lbl">Current Threats</div><div className="fg-fact-val">{d.conservation.threats}</div></div>}
-                          {d.conservation.protected && <div className="fg-fact full"><div className="fg-fact-lbl">Legal Protections</div><div className="fg-fact-val">{d.conservation.protected}</div></div>}
-                        </div>
-                        {d.conservation.what_you_can_do && (
-                          <div className="fg-highlight">
-                            <div className="fg-highlight-lbl">What You Can Do</div>
-                            <div className="fg-highlight-val">{d.conservation.what_you_can_do}</div>
+                    <button className="advisor-btn" style={{marginBottom:10,padding:"8px 16px",fontSize:10}}
+                      onClick={()=>fetchModalHabitat(selected, modalHabProp)} disabled={modalHabLoading}>
+                      {modalHabLoading?<><Spinner teal/>Loading…</>:"Get Habitat Tips"}
+                    </button>
+                    {modalHabResult && (
+                      <div className="habitat-result">
+                        {modalHabResult.split("\n").filter(l=>l.trim()).map((line,i)=>(
+                          <div key={i} className="action-item">
+                            <div className="action-dot"/>
+                            <div className="action-text">{line.replace(/^\d+\.\s*/,"")}</div>
                           </div>
-                        )}
+                        ))}
                       </div>
-                      <div style={{marginTop:16,textAlign:"center"}}>
-                        <button className="advisor-btn"
-                          onClick={()=>{ setTab("Habitat Advisor"); setHabSpecies(selected.name); setSelected(null); }}>
-                          🌿 Open Habitat Improvement Plan
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── FIELD NOTES ── */}
-                  {detailTab==="fieldnotes" && d.field_notes && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title">📓 Expert Field Notes</div>
-                        <div className="fg-grid">
-                          {d.field_notes.best_time && <div className="fg-fact full"><div className="fg-fact-lbl">Best Time to Observe</div><div className="fg-fact-val">{d.field_notes.best_time}</div></div>}
-                          {d.field_notes.best_places && <div className="fg-fact full"><div className="fg-fact-lbl">Best Places to Find</div><div className="fg-fact-val">{d.field_notes.best_places}</div></div>}
-                        </div>
-                      </div>
-                      {d.field_notes.tips && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">💡 Identification Tips</div>
-                          <div className="fg-tip-list">
-                            {d.field_notes.tips.split(/\.\s+|\n/).filter(t=>t.trim().length>10).map((tip,i)=>(
-                              <div key={i} className="fg-tip">
-                                <div className="fg-tip-dot"/>
-                                <div>{tip.trim()}{tip.trim().endsWith(".")?"":" ."}</div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {d.field_notes.similar_species && (
-                        <div className="fg-section">
-                          <div className="fg-section-title">⚠️ Telling Apart Similar Species</div>
-                          <div className="fg-fact full" style={{marginTop:0}}>
-                            <div className="fg-fact-val">{d.field_notes.similar_species}</div>
-                          </div>
-                        </div>
-                      )}
-                      {/* Habitat tips */}
-                      <div className="fg-section">
-                        <div className="fg-section-title">🌿 Habitat Tips</div>
-                        <div className="habitat-quick-btns">
-                          {PROPERTY_TYPES.map(p=>(
-                            <div key={p.id}
-                              className={`hq-btn${modalHabProp===p.id?" active":""}`}
-                              onClick={()=>{ setModalHabProp(p.id); setModalHabResult(""); }}>
-                              {p.icon} {p.label.split("/")[0].trim()}
-                            </div>
-                          ))}
-                        </div>
-                        <button className="advisor-btn" style={{marginBottom:10,padding:"8px 16px",fontSize:10}}
-                          onClick={()=>fetchModalHabitat(selected, modalHabProp)} disabled={modalHabLoading}>
-                          {modalHabLoading?<><Spinner teal/>Loading…</>:"Get Habitat Tips"}
-                        </button>
-                        {modalHabResult && (
-                          <div className="habitat-result">
-                            {modalHabResult.split("\n").filter(l=>l.trim()).map((line,i)=>(
-                              <div key={i} className="action-item">
-                                <div className="action-dot"/>
-                                <div className="action-text">{line.replace(/^\d+\.\s*/,"")}</div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── INVASIVE: SPREAD & IMPACT ── */}
-                  {detailTab==="spread" && selected.isInvasive && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title" style={{color:"#b03020"}}>🌍 Origin &amp; Spread</div>
-                        <div className="fg-grid">
-                          {selected.origin && <div className="fg-fact full"><div className="fg-fact-lbl">Native Origin</div><div className="fg-fact-val">{selected.origin}</div></div>}
-                          {selected.spread && <div className="fg-fact full"><div className="fg-fact-lbl">How It Spreads</div><div className="fg-fact-val">{selected.spread}</div></div>}
-                        </div>
-                      </div>
-                      {selected.impact && (
-                        <div className="fg-section">
-                          <div className="fg-section-title" style={{color:"#b03020"}}>⚠️ Ecological Impact</div>
-                          <div className="fg-fact full" style={{borderColor:"#f0c8c0",background:"#fdf0ee"}}>
-                            <div className="fg-fact-val" style={{color:"#8a2010"}}>{selected.impact}</div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* ── INVASIVE: CONTROL ── */}
-                  {detailTab==="control" && selected.isInvasive && (
-                    <div>
-                      <div className="fg-section">
-                        <div className="fg-section-title" style={{color:"#2d6b1a"}}>🛠 Control &amp; Removal</div>
-                        {selected.control && (
-                          <div className="fg-fact full" style={{borderColor:"#c8ddb8",background:"#f0f8ec"}}>
-                            <div className="fg-fact-val" style={{color:"#2a3820"}}>{selected.control}</div>
-                          </div>
-                        )}
-                        {d?.conservation?.what_you_can_do && (
-                          <div className="fg-highlight" style={{marginTop:14}}>
-                            <div className="fg-highlight-lbl">What You Can Do</div>
-                            <div className="fg-highlight-val">{d.conservation.what_you_can_do}</div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                 </>) : (
-                  <div style={{fontSize:13,color:"var(--stone)",lineHeight:1.7}}>{selected.description}</div>
+                  <div style={{fontSize:14,color:"var(--stone)",lineHeight:1.7,padding:"20px 0"}}>{selected.description}</div>
                 )}
               </div>
             </div>
