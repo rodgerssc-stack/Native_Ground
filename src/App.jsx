@@ -819,12 +819,12 @@ description: 2 vivid sentences with key identification features. Return ONLY the
     const offset = (currentPage-1)*PAGE_SIZE;
     try {
       const raw = await callClaude(
-        "You are an expert wildlife biologist specializing in native US fauna. Return ONLY valid JSON array, no markdown.",
-        `List ${PAGE_SIZE} native ${catLabel} species${sc} found in ${activeState}${hc}${snc}. Skip first ${offset} results.
-Return JSON array of ${PAGE_SIZE} objects: {name,latin,category,description,habitat,season,size,color,conservation}
-category must be one of: mammal|bird|fish|reptile|amphibian|insect
-description: 2 vivid sentences with key identification features. Return ONLY the array.`,
-        3000
+        "You are a wildlife biologist. Return ONLY valid JSON array, no markdown.",
+        `List ${PAGE_SIZE} native ${catLabel} species${sc} in ${activeState}${hc}${snc}. Skip first ${offset}.
+Return JSON array: {name,latin,category,description,habitat,season,size,color,conservation}
+category: mammal|bird|fish|reptile|amphibian|insect
+description: 2 sentences with ID features. Return ONLY the array.`,
+        2000
       );
       const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
       if (loadMore) { setWldSpecies(prev=>[...prev,...parsed]); setWldPage(currentPage); }
@@ -841,8 +841,7 @@ description: 2 vivid sentences with key identification features. Return ONLY the
     const currentPage = loadMore ? invPage+1 : 1;
     if (!loadMore) { setInvLoading(true); setInvSpecies([]); setInvPage(1); setCardPhotos({}); }
     else setInvLoadingMore(true);
-    const cm = getCatMeta(invCatId, "invasive");
-    const catLabel = invCatId==="all" ? "invasive species (plants and animals)" :
+    const catLabel = invCatId==="all" ? "invasive species" :
                      invCatId==="plant" ? "invasive plants" :
                      invCatId==="animal" ? "invasive animals" :
                      invCatId==="insect" ? "invasive insects" :
@@ -851,17 +850,17 @@ description: 2 vivid sentences with key identification features. Return ONLY the
     const offset = (currentPage-1)*PAGE_SIZE;
     try {
       const raw = await callClaude(
-        "You are an expert invasive species biologist. Return ONLY valid JSON array, no markdown.",
-        `List ${PAGE_SIZE} ${catLabel}${sc} found in or threatening ${activeState}. Skip first ${offset} results.
-Return JSON array of ${PAGE_SIZE} objects: {name,latin,category,description,origin,spread,impact,control,size,color}
-category must be one of: plant|animal|insect|aquatic
-description: 2 sentences describing appearance and how to identify it.
-origin: where this species came from originally.
-spread: how it spreads and where it has established in the US.
-impact: the ecological or economic damage it causes.
-control: recommended removal or control methods.
+        "You are an invasive species expert. Return ONLY a valid JSON array, no markdown.",
+        `List ${PAGE_SIZE} ${catLabel}${sc} found in ${activeState}. Skip first ${offset}.
+Return JSON array of ${PAGE_SIZE} objects with these short fields:
+{name,latin,category,description,origin,impact,control,size,color}
+category: plant|animal|insect|aquatic
+description: 1 sentence ID features.
+origin: country or region of origin.
+impact: 1 sentence ecological damage.
+control: 1 sentence removal method.
 Return ONLY the array.`,
-        3000
+        2000
       );
       const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
       if (loadMore) { setInvSpecies(prev=>[...prev,...parsed]); setInvPage(currentPage); }
