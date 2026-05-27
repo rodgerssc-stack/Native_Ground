@@ -1160,15 +1160,37 @@ For each section, give specific, actionable recommendations appropriate for ${ha
 
   function handleImageFile(file) {
     if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target.result;
+    // Compress image before encoding to reduce payload size
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement("canvas");
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
       const base64 = dataUrl.split(",")[1];
-      const mediaType = file.type;
-      setAiImage({ base64, mediaType, previewUrl: dataUrl });
+      setAiImage({ base64, mediaType: "image/jpeg", previewUrl: dataUrl });
       setAiResult("");
     };
-    reader.readAsDataURL(file);
+    img.onerror = () => {
+      // Fallback to direct encoding if compression fails
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        setAiImage({ base64: dataUrl.split(",")[1], mediaType: file.type, previewUrl: dataUrl });
+        setAiResult("");
+      };
+      reader.readAsDataURL(file);
+    };
+    img.src = objectUrl;
   }
 
   function clearImage() {
