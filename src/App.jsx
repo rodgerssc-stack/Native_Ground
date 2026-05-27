@@ -84,18 +84,31 @@ const STATES = [
   "Wisconsin","Wyoming"
 ];
 
-const CATEGORIES = [
-  { id:"all",       label:"All Species",      icon:"🌎", color:"#4a6741" },
-  { id:"wildflower",label:"Wildflowers",       icon:"✿",  color:"#c0692a" },
-  { id:"tree",      label:"Trees & Shrubs",    icon:"🌲", color:"#2d6b3a" },
-  { id:"fern",      label:"Ferns & Mosses",    icon:"🌿", color:"#3a7a55" },
-  { id:"grass",     label:"Grasses & Sedges",  icon:"⌇",  color:"#7a6830" },
-  { id:"mammal",    label:"Mammals",           icon:"🦌", color:"#7a4a28" },
-  { id:"bird",      label:"Birds",             icon:"🐦", color:"#2a5a8a" },
-  { id:"fish",      label:"Fish",              icon:"🐟", color:"#2a6a7a" },
-  { id:"reptile",   label:"Reptiles",          icon:"🦎", color:"#5a7a28" },
-  { id:"amphibian", label:"Amphibians",        icon:"🐸", color:"#3a7a3a" },
-  { id:"insect",    label:"Insects & Inverts", icon:"🦋", color:"#7a3a6a" },
+const PLANT_CATEGORIES = [
+  { id:"all",       label:"All Plants",        icon:"🌿", color:"#4a6741" },
+  { id:"wildflower",label:"Wildflowers",        icon:"✿",  color:"#c0692a" },
+  { id:"tree",      label:"Trees & Shrubs",     icon:"🌲", color:"#2d6b3a" },
+  { id:"fern",      label:"Ferns & Mosses",     icon:"🌿", color:"#3a7a55" },
+  { id:"grass",     label:"Grasses & Sedges",   icon:"⌇",  color:"#7a6830" },
+  { id:"mushroom",  label:"Mushrooms & Fungi",  icon:"🍄", color:"#8a5a28" },
+];
+
+const WILDLIFE_CATEGORIES = [
+  { id:"all",       label:"All Wildlife",       icon:"🌎", color:"#4a6741" },
+  { id:"mammal",    label:"Mammals",            icon:"🦌", color:"#7a4a28" },
+  { id:"bird",      label:"Birds",              icon:"🐦", color:"#2a5a8a" },
+  { id:"fish",      label:"Fish",               icon:"🐟", color:"#2a6a7a" },
+  { id:"reptile",   label:"Reptiles",           icon:"🦎", color:"#5a7a28" },
+  { id:"amphibian", label:"Amphibians",         icon:"🐸", color:"#3a7a3a" },
+  { id:"insect",    label:"Insects & Inverts",  icon:"🦋", color:"#7a3a6a" },
+];
+
+const INVASIVE_CATEGORIES = [
+  { id:"all",       label:"All Invasive",       icon:"⚠️", color:"#b03020" },
+  { id:"plant",     label:"Invasive Plants",    icon:"🌱", color:"#8a4a10" },
+  { id:"animal",    label:"Invasive Animals",   icon:"🐍", color:"#6a3a20" },
+  { id:"insect",    label:"Invasive Insects",   icon:"🪲", color:"#7a3a10" },
+  { id:"aquatic",   label:"Aquatic Invasives",  icon:"🐠", color:"#2a5a7a" },
 ];
 
 const HABITATS = [
@@ -118,41 +131,46 @@ const PROPERTY_SIZES = [
   "Under ¼ acre","¼ – 1 acre","1 – 5 acres","5 – 20 acres","20 – 100 acres","100+ acres"
 ];
 
-const TABS = ["Browse & Discover","Habitat Advisor","AI Identifier","About"];
+const TABS = ["Native","Invasive","Wildlife","AI Identifier","About"];
 
 const AI_ID_MODES = [
   { id:"photo", label:"Photo ID", icon:"📷", desc:"Upload or take a photo" },
   { id:"text",  label:"Describe It", icon:"✏️",  desc:"Describe what you saw" },
 ];
 
-const FEATURED_SEARCHES = [
-  { state:"California", category:"bird",       label:"California Birds" },
-  { state:"Florida",    category:"reptile",    label:"Florida Reptiles" },
-  { state:"Montana",    category:"mammal",     label:"Montana Mammals" },
-  { state:"Texas",      category:"wildflower", label:"Texas Wildflowers" },
-  { state:"Alaska",     category:"fish",       label:"Alaska Fish" },
-  { state:"Hawaii",     category:"all",        label:"Hawaii Native Species" },
-  { state:"Oregon",     category:"fern",       label:"Oregon Ferns" },
-  { state:"Minnesota",  category:"amphibian",  label:"Minnesota Amphibians" },
+const NATIVE_FEATURED = [
+  { state:"Pennsylvania", category:"wildflower", label:"PA Wildflowers" },
+  { state:"Texas",        category:"tree",       label:"Texas Trees" },
+  { state:"Oregon",       category:"fern",       label:"Oregon Ferns" },
+  { state:"California",   category:"mushroom",   label:"California Fungi" },
+  { state:"Florida",      category:"wildflower", label:"Florida Wildflowers" },
+  { state:"Montana",      category:"grass",      label:"Montana Grasses" },
+];
+
+const WILDLIFE_FEATURED = [
+  { state:"California", category:"bird",      label:"California Birds" },
+  { state:"Florida",    category:"reptile",   label:"Florida Reptiles" },
+  { state:"Montana",    category:"mammal",    label:"Montana Mammals" },
+  { state:"Alaska",     category:"fish",      label:"Alaska Fish" },
+  { state:"Minnesota",  category:"amphibian", label:"Minnesota Amphibians" },
+  { state:"Texas",      category:"insect",    label:"Texas Insects" },
+];
+
+const INVASIVE_FEATURED = [
+  { state:"Florida",      category:"animal",  label:"Florida Invasives" },
+  { state:"Great Lakes",  category:"aquatic", label:"Great Lakes Invaders" },
+  { state:"Southeast",    category:"plant",   label:"Southeast Invasive Plants" },
+  { state:"Pennsylvania", category:"all",     label:"PA Invasive Species" },
+  { state:"California",   category:"plant",   label:"California Invasive Plants" },
+  { state:"Northeast",    category:"insect",  label:"Northeast Invasive Insects" },
 ];
 
 const EXAMPLE_QUERIES = [
   "Large brown bird soaring on thermals, white head and tail, near a river in Montana",
   "Small orange and black butterfly on milkweed in an Illinois meadow in August",
-  "Silvery fish, red stripe along side, jumping in a cold California mountain stream",
   "Bright red wildflower spike along a Florida wetland edge in summer",
+  "Tan mushroom with white gills growing on a dead oak log in Pennsylvania",
   "Striped black and tan mammal, size of a housecat, digging in an Ohio backyard",
-];
-
-const HABITAT_EXAMPLES = [
-  { species:"Monarch Butterfly", state:"Iowa", property:"farm", size:"20 – 100 acres" },
-  { species:"Eastern Box Turtle", state:"Virginia", property:"woodland", size:"1 – 5 acres" },
-  { species:"Wood Duck", state:"Minnesota", property:"wetland", size:"5 – 20 acres" },
-  { species:"Bald Eagle", state:"Pennsylvania", property:"farm", size:"100+ acres" },
-  { species:"Prairie Warbler", state:"Kansas", property:"prairie", size:"20 – 100 acres" },
-  { species:"Brook Trout", state:"Vermont", property:"wetland", size:"1 – 5 acres" },
-  { species:"Monarch Butterfly", state:"Texas", property:"backyard", size:"Under ¼ acre" },
-  { species:"American Black Bear", state:"North Carolina", property:"woodland", size:"100+ acres" },
 ];
 
 // ── MONETIZATION ─────────────────────────────────────────────────────────────
@@ -270,16 +288,16 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 .state-s{font-size:13px;line-height:1.7;max-width:380px;margin:0 auto}
 
 /* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(8,14,6,.82);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.modal{background:var(--paper);max-width:720px;width:100%;border-radius:2px;box-shadow:0 48px 120px rgba(0,0,0,.55);max-height:92vh;overflow-y:auto;position:relative}
-.modal-ph{height:260px;display:flex;align-items:center;justify-content:center;font-size:76px}
-.modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);border:none;cursor:pointer;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;font-size:15px;transition:background .15s}
+.overlay{position:fixed;inset:0;background:rgba(8,14,6,.82);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal{background:var(--paper);max-width:860px;width:100%;border-radius:2px;box-shadow:0 48px 120px rgba(0,0,0,.55);height:90vh;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.modal-ph{height:240px;display:flex;align-items:center;justify-content:center;font-size:76px;flex-shrink:0}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);border:none;cursor:pointer;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;font-size:16px;transition:background .15s}
 .modal-close:hover{background:rgba(0,0,0,.7)}
-.modal-hdr{padding:18px 26px 0;border-bottom:1px solid var(--mist)}
-.modal-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);margin-bottom:2px}
-.modal-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--stone);margin-bottom:12px}
+.modal-hdr{padding:18px 28px 0;border-bottom:1px solid var(--mist);flex-shrink:0}
+.modal-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.modal-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--stone);margin-bottom:12px}
 .modal-body{padding:18px 26px 28px}
-.modal-desc{font-size:13.5px;line-height:1.85;color:#3e3428;margin-bottom:20px}
+.modal-desc{font-size:14px;line-height:1.85;color:#3e3428;margin-bottom:20px}
 .fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
 .fact{background:white;border:1px solid var(--mist);border-radius:2px;padding:11px 13px}
 .fact-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:3px}
@@ -291,19 +309,20 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 .c-cr{background:#ffd8d8;color:#b00000}
 
 /* FIELD GUIDE TABS */
-.fg-tabs{display:flex;overflow-x:auto;background:white;border-bottom:2px solid var(--mist);padding:0 26px;gap:0}
-.fg-tab{padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;flex-shrink:0}
-.fg-tab.active{color:var(--moss);border-bottom-color:var(--moss);font-weight:600}
+.fg-tabs{display:flex;overflow-x:auto;background:white;border-bottom:2px solid var(--mist);padding:0 28px;gap:0;flex-shrink:0}
+.fg-tabs::-webkit-scrollbar{height:0}
+.fg-tab{padding:13px 18px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--stone);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;flex-shrink:0;font-weight:500}
+.fg-tab.active{color:var(--moss);border-bottom-color:var(--moss);font-weight:700}
 .fg-tab:hover:not(.active){color:var(--ink)}
-.fg-body{padding:20px 26px 28px}
-.fg-section{margin-bottom:20px}
-.fg-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--moss);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:7px}
-.fg-overview{font-size:14px;line-height:1.9;color:#3e3428}
-.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.fg-fact{background:white;border:1px solid var(--mist);border-radius:2px;padding:12px 14px}
+.fg-body{padding:22px 28px 32px;overflow-y:auto;flex:1}
+.fg-section{margin-bottom:22px}
+.fg-section-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--moss);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:7px}
+.fg-overview{font-size:15px;line-height:1.9;color:#3e3428}
+.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-fact{background:white;border:1px solid var(--mist);border-radius:2px;padding:14px 16px}
 .fg-fact.full{grid-column:1/-1}
-.fg-fact-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:4px}
-.fg-fact-val{font-size:13px;color:var(--ink);line-height:1.6}
+.fg-fact-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:5px}
+.fg-fact-val{font-size:14px;color:var(--ink);line-height:1.65}
 .fg-highlight{background:#f0f8ec;border:1px solid #c8ddb8;border-radius:2px;padding:14px 16px;margin-top:14px}
 .fg-highlight-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--moss);margin-bottom:6px;font-weight:600}
 .fg-highlight-val{font-size:13px;color:#2a3820;line-height:1.75}
@@ -575,7 +594,15 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 
-function getCatMeta(id) { return CATEGORIES.find(c=>c.id===id)||CATEGORIES[0]; }
+function getCatMeta(id, context="native") {
+  const list = context==="wildlife" ? WILDLIFE_CATEGORIES :
+               context==="invasive" ? INVASIVE_CATEGORIES :
+               PLANT_CATEGORIES;
+  return list.find(c=>c.id===id) || list[0];
+}
+
+// Legacy CATEGORIES alias for modal which uses selected.category
+const CATEGORIES = [...PLANT_CATEGORIES, ...WILDLIFE_CATEGORIES.slice(1), ...INVASIVE_CATEGORIES.slice(1)];
 
 function ConsBadge({status}) {
   if (!status) return null;
@@ -613,7 +640,7 @@ async function callClaude(system, user, maxTokens=2000) {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      model:"claude-sonnet-4-5",
+      model:"claude-sonnet-4-20250514",
       max_tokens: maxTokens,
       system,
       messages:[{role:"user",content:user}]
@@ -664,7 +691,7 @@ function sectionIcon(title) {
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 
 function FieldGuide() {
-  const [tab, setTab] = useState("Browse & Discover");
+  const [tab, setTab] = useState("Native");
 
   // ── MONETIZATION STATE ───────────────────────────────────────────────────
   const [isPro, setIsPro] = useState(false);
@@ -675,8 +702,8 @@ function FieldGuide() {
   function openUpgrade() { setShowUpgrade(true); }
   function activatePro() { setIsPro(true); setShowUpgrade(false); }
 
-  // Browse
-  const [state, setState] = useState("Pennsylvania");
+  // Shared search state — used across Native, Wildlife, Invasive tabs
+  const [activeState, setActiveState] = useState("Pennsylvania");
   const [catId, setCatId] = useState("all");
   const [habitat, setHabitat] = useState("Any Habitat");
   const [season, setSeason] = useState("Any Season");
@@ -687,6 +714,26 @@ function FieldGuide() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  // Invasive state
+  const [invCatId, setInvCatId] = useState("all");
+  const [invSpecies, setInvSpecies] = useState([]);
+  const [invLoading, setInvLoading] = useState(false);
+  const [invHasSearched, setInvHasSearched] = useState(false);
+  const [invSearchText, setInvSearchText] = useState("");
+  const [invHasMore, setInvHasMore] = useState(false);
+  const [invLoadingMore, setInvLoadingMore] = useState(false);
+  const [invPage, setInvPage] = useState(1);
+
+  // Wildlife state
+  const [wldCatId, setWldCatId] = useState("all");
+  const [wldSpecies, setWldSpecies] = useState([]);
+  const [wldLoading, setWldLoading] = useState(false);
+  const [wldHasSearched, setWldHasSearched] = useState(false);
+  const [wldSearchText, setWldSearchText] = useState("");
+  const [wldHasMore, setWldHasMore] = useState(false);
+  const [wldLoadingMore, setWldLoadingMore] = useState(false);
+  const [wldPage, setWldPage] = useState(1);
 
   // Modal
   const [selected, setSelected] = useState(null);
@@ -734,19 +781,19 @@ function FieldGuide() {
     const currentPage = loadMore ? page+1 : 1;
     if (!loadMore) { setLoading(true); setSpecies([]); setPage(1); setCardPhotos({}); }
     else setLoadingMore(true);
-    const cm = getCatMeta(catId);
-    const catLabel = catId==="all" ? "native plants and wildlife" : cm.label.toLowerCase();
+    const cm = getCatMeta(catId, "native");
+    const catLabel = catId==="all" ? "native plants (wildflowers, trees, shrubs, ferns, mosses, grasses, sedges, mushrooms, fungi)" : cm.label.toLowerCase();
     const sc = searchText.trim() ? ` matching "${searchText.trim()}"` : "";
     const hc = habitat!=="Any Habitat" ? ` in ${habitat} habitat` : "";
     const snc = season!=="Any Season" ? ` active in ${season}` : "";
     const offset = (currentPage-1)*PAGE_SIZE;
     try {
       const raw = await callClaude(
-        "You are an expert field naturalist. Return ONLY valid JSON array, no markdown.",
-        `List ${PAGE_SIZE} native ${catLabel} species${sc} found in ${state}${hc}${snc}. Skip first ${offset} results.
+        "You are an expert botanist and field naturalist specializing in native US plants. Return ONLY valid JSON array, no markdown.",
+        `List ${PAGE_SIZE} native ${catLabel} species${sc} found in ${activeState}${hc}${snc}. Skip first ${offset} results.
 Return JSON array of ${PAGE_SIZE} objects: {name,latin,category,description,habitat,season,size,color,conservation}
-category must be one of: wildflower|tree|fern|grass|mammal|bird|fish|reptile|amphibian|insect
-description: 2 vivid sentences with ID features. Return ONLY the array.`,
+category must be one of: wildflower|tree|fern|grass|mushroom
+description: 2 vivid sentences with key identification features. Return ONLY the array.`,
         3000
       );
       const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
@@ -754,10 +801,76 @@ description: 2 vivid sentences with ID features. Return ONLY the array.`,
       else setSpecies(parsed);
       setHasMore(parsed.length===PAGE_SIZE);
       setHasSearched(true);
-      // Fetch photos for all cards in background
       fetchCardPhotos(parsed);
     } catch(e) { if(!loadMore) setSpecies([]); }
     setLoading(false); setLoadingMore(false);
+  }
+
+  async function fetchWildlife(loadMore=false) {
+    if (wldLoading||wldLoadingMore) return;
+    const currentPage = loadMore ? wldPage+1 : 1;
+    if (!loadMore) { setWldLoading(true); setWldSpecies([]); setWldPage(1); setCardPhotos({}); }
+    else setWldLoadingMore(true);
+    const cm = getCatMeta(wldCatId, "wildlife");
+    const catLabel = wldCatId==="all" ? "native wildlife (mammals, birds, fish, reptiles, amphibians, insects)" : cm.label.toLowerCase();
+    const sc = wldSearchText.trim() ? ` matching "${wldSearchText.trim()}"` : "";
+    const hc = habitat!=="Any Habitat" ? ` in ${habitat} habitat` : "";
+    const snc = season!=="Any Season" ? ` active in ${season}` : "";
+    const offset = (currentPage-1)*PAGE_SIZE;
+    try {
+      const raw = await callClaude(
+        "You are an expert wildlife biologist specializing in native US fauna. Return ONLY valid JSON array, no markdown.",
+        `List ${PAGE_SIZE} native ${catLabel} species${sc} found in ${activeState}${hc}${snc}. Skip first ${offset} results.
+Return JSON array of ${PAGE_SIZE} objects: {name,latin,category,description,habitat,season,size,color,conservation}
+category must be one of: mammal|bird|fish|reptile|amphibian|insect
+description: 2 vivid sentences with key identification features. Return ONLY the array.`,
+        3000
+      );
+      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      if (loadMore) { setWldSpecies(prev=>[...prev,...parsed]); setWldPage(currentPage); }
+      else setWldSpecies(parsed);
+      setWldHasMore(parsed.length===PAGE_SIZE);
+      setWldHasSearched(true);
+      fetchCardPhotos(parsed);
+    } catch(e) { if(!loadMore) setWldSpecies([]); }
+    setWldLoading(false); setWldLoadingMore(false);
+  }
+
+  async function fetchInvasive(loadMore=false) {
+    if (invLoading||invLoadingMore) return;
+    const currentPage = loadMore ? invPage+1 : 1;
+    if (!loadMore) { setInvLoading(true); setInvSpecies([]); setInvPage(1); setCardPhotos({}); }
+    else setInvLoadingMore(true);
+    const cm = getCatMeta(invCatId, "invasive");
+    const catLabel = invCatId==="all" ? "invasive species (plants and animals)" :
+                     invCatId==="plant" ? "invasive plants" :
+                     invCatId==="animal" ? "invasive animals" :
+                     invCatId==="insect" ? "invasive insects" :
+                     invCatId==="aquatic" ? "invasive aquatic species" : "invasive species";
+    const sc = invSearchText.trim() ? ` matching "${invSearchText.trim()}"` : "";
+    const offset = (currentPage-1)*PAGE_SIZE;
+    try {
+      const raw = await callClaude(
+        "You are an expert invasive species biologist. Return ONLY valid JSON array, no markdown.",
+        `List ${PAGE_SIZE} ${catLabel}${sc} found in or threatening ${activeState}. Skip first ${offset} results.
+Return JSON array of ${PAGE_SIZE} objects: {name,latin,category,description,origin,spread,impact,control,size,color}
+category must be one of: plant|animal|insect|aquatic
+description: 2 sentences describing appearance and how to identify it.
+origin: where this species came from originally.
+spread: how it spreads and where it has established in the US.
+impact: the ecological or economic damage it causes.
+control: recommended removal or control methods.
+Return ONLY the array.`,
+        3000
+      );
+      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      if (loadMore) { setInvSpecies(prev=>[...prev,...parsed]); setInvPage(currentPage); }
+      else setInvSpecies(parsed);
+      setInvHasMore(parsed.length===PAGE_SIZE);
+      setInvHasSearched(true);
+      fetchCardPhotos(parsed);
+    } catch(e) { if(!loadMore) setInvSpecies([]); }
+    setInvLoading(false); setInvLoadingMore(false);
   }
 
   async function fetchDetail(sp) {
@@ -1100,7 +1213,7 @@ IUCN/NatureServe status and any population trend notes.`;
       const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 1200, system: systemPrompt, messages })
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1200, system: systemPrompt, messages })
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
@@ -1121,14 +1234,6 @@ IUCN/NatureServe status and any population trend notes.`;
       return <div key={i}>{line}</div>;
     });
   }
-
-  function applyFeatured(f) {
-    setState(f.state); setCatId(f.category); setHabitat("Any Habitat"); setSeason("Any Season"); setSearchText(""); setTab("Browse & Discover");
-    setTimeout(()=>fetchSpecies(),50);
-  }
-
-  const catMeta = getCatMeta(catId);
-
 
   // ── GENERIC AD COMPONENT ─────────────────────────────────────────────────
   // Swap .ad-slot-inner contents for your ad network script tag (AdSense etc.)
@@ -1257,7 +1362,7 @@ IUCN/NatureServe status and any population trend notes.`;
               : <div className="free-badge" onClick={openUpgrade}>✦ Upgrade to Pro</div>
             }
             <div className="hdr-stats">
-              {[["200,000+","Species"],["50","States"],["11","Categories"],["AI","Powered"]].map(([n,l])=>(
+              {[["Native","Plants"],["Invasive","Species"],["Wildlife","Animals"],["AI","Powered"]].map(([n,l])=>(
                 <div key={l} style={{textAlign:"center"}}>
                   <div className="hdr-stat-num">{n}</div>
                   <div className="hdr-stat-lbl">{l}</div>
@@ -1275,15 +1380,15 @@ IUCN/NatureServe status and any population trend notes.`;
         ))}
       </div>
 
-      {/* ══ BROWSE ══════════════════════════════════════════════════════════ */}
-      {tab==="Browse & Discover" && <>
+      {/* ══ NATIVE TAB ══════════════════════════════════════════════════════ */}
+      {tab==="Native" && <>
         <div className="controls">
           <div className="search-wrap">
             <span className="s-ico">⌕</span>
-            <input className="srch" placeholder="Search species, trait, or keyword…" value={searchText}
+            <input className="srch" placeholder="Search native plants…" value={searchText}
               onChange={e=>setSearchText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&fetchSpecies()}/>
           </div>
-          <select className="fsel" value={state} onChange={e=>setState(e.target.value)}>
+          <select className="fsel" value={activeState} onChange={e=>setActiveState(e.target.value)}>
             {STATES.map(s=><option key={s}>{s}</option>)}
           </select>
           <select className="fsel" value={habitat} onChange={e=>setHabitat(e.target.value)}>
@@ -1297,7 +1402,7 @@ IUCN/NatureServe status and any population trend notes.`;
           </button>
         </div>
         <div className="cat-strip">
-          {CATEGORIES.map(c=>(
+          {PLANT_CATEGORIES.map(c=>(
             <div key={c.id} className={`cat-pill${catId===c.id?" active":""}`}
               style={catId===c.id?{background:c.color,borderColor:c.color}:{}}
               onClick={()=>setCatId(c.id)}>{c.icon} {c.label}</div>
@@ -1307,9 +1412,10 @@ IUCN/NatureServe status and any population trend notes.`;
           <div className="featured">
             <div className="section-label">Featured Collections</div>
             <div className="feat-chips">
-              {FEATURED_SEARCHES.map(f=>(
-                <div key={f.label} className="feat-chip" onClick={()=>applyFeatured(f)}>
-                  {getCatMeta(f.category).icon} {f.label}
+              {NATIVE_FEATURED.map(f=>(
+                <div key={f.label} className="feat-chip"
+                  onClick={()=>{ setActiveState(f.state); setCatId(f.category); setHasSearched(false); setTimeout(()=>fetchSpecies(),50); }}>
+                  {getCatMeta(f.category,"native").icon} {f.label}
                 </div>
               ))}
             </div>
@@ -1318,29 +1424,20 @@ IUCN/NatureServe status and any population trend notes.`;
         {loading && <SkeletonGrid count={PAGE_SIZE}/>}
         {!loading && hasSearched && <>
           <div className="results-meta">
-            <div className="results-count">{species.length} species · {state} · {catMeta.label}{habitat!=="Any Habitat"?` · ${habitat}`:""}{season!=="Any Season"?` · ${season}`:""}</div>
+            <div className="results-count">{species.length} species · {activeState} · {getCatMeta(catId,"native").label}</div>
           </div>
           <div className="grid">
             {species.length===0 ? (
-              <div className="state-box"><div className="state-ico">🔍</div><div className="state-t">No species found</div><div className="state-s">Try adjusting your filters or search.</div></div>
-            ) : species.reduce((acc, sp, i) => {
-              const cm=getCatMeta(sp.category);
+              <div className="state-box"><div className="state-ico">🔍</div><div className="state-t">No species found</div><div className="state-s">Try adjusting your filters.</div></div>
+            ) : species.reduce((acc,sp,i)=>{
+              const cm=getCatMeta(sp.category,"native");
               acc.push(
                 <div key={`sp-${i}`} className="card" onClick={()=>openModal(sp)}>
                   <div className="card-img-wrap">
                     {cardPhotos[sp.latin]
-                      ? <img src={cardPhotos[sp.latin]} alt={sp.name}
-                          style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
-                          onError={e=>{ e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }}
-                        />
+                      ? <img src={cardPhotos[sp.latin]} alt={sp.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
                       : null}
-                    <div style={{
-                      display: cardPhotos[sp.latin] ? "none" : "flex",
-                      width:"100%", height:"100%",
-                      alignItems:"center", justifyContent:"center",
-                      fontSize:"52px", background:"var(--cream)",
-                      flexDirection:"column", gap:"6px"
-                    }}>
+                    <div style={{display:cardPhotos[sp.latin]?"none":"flex",width:"100%",height:"100%",alignItems:"center",justifyContent:"center",fontSize:"52px",background:"var(--cream)",flexDirection:"column",gap:"6px"}}>
                       <span>{cm.icon}</span>
                       <span style={{fontSize:"10px",color:"var(--stone)",letterSpacing:"1px"}}>Loading photo…</span>
                     </div>
@@ -1359,137 +1456,211 @@ IUCN/NatureServe status and any population trend notes.`;
                   </div>
                 </div>
               );
-              if ((i+1) % 6 === 0) acc.push(<AdSlotCard key={`ad-${i}`}/>);
+              if ((i+1)%6===0) acc.push(<AdSlotCard key={`ad-${i}`}/>);
               return acc;
-            }, [])}
+            },[])}
           </div>
-          {hasMore&&(
-            <div style={{textAlign:"center",padding:"0 0 20px"}}>
-              <button className="load-more-btn" onClick={()=>fetchSpecies(true)} disabled={loadingMore}>
-                {loadingMore?<><Spinner/>Loading more…</>:`Load more ${catMeta.label.toLowerCase()}`}
-              </button>
-            </div>
-          )}
+          {hasMore&&<div style={{textAlign:"center",padding:"0 0 20px"}}>
+            <button className="load-more-btn" onClick={()=>fetchSpecies(true)} disabled={loadingMore}>
+              {loadingMore?<><Spinner/>Loading more…</>:"Load more plants"}
+            </button>
+          </div>}
           <AdSlotBanner/>
         </>}
         {!loading&&!hasSearched&&(
           <div className="grid">
-            <div className="state-box"><div className="state-ico">🌱</div><div className="state-t">Explore Native Species</div>
-              <div className="state-s">Select a state and category, then click <strong>Discover</strong> — or choose a featured collection above.</div></div>
+            <div className="state-box"><div className="state-ico">🌱</div><div className="state-t">Explore Native Plants</div>
+              <div className="state-s">Select a state and plant category, then click <strong>Discover</strong>.</div></div>
           </div>
         )}
       </>}
 
-      {/* ══ HABITAT ADVISOR ═════════════════════════════════════════════════ */}
-      {tab==="Habitat Advisor" && (
-        <div className="advisor-wrap">
-          <div className="advisor-hero">
-            <div className="advisor-hero-title">🌱 Habitat Improvement Advisor</div>
-            <div className="advisor-hero-sub">Native Ground · Personalized, science-based habitat plans for any species, location &amp; property type</div>
+      {/* ══ INVASIVE TAB ════════════════════════════════════════════════════ */}
+      {tab==="Invasive" && <>
+        <div className="controls" style={{background:"#3a0a08"}}>
+          <div className="search-wrap">
+            <span className="s-ico" style={{color:"#e09080"}}>⌕</span>
+            <input className="srch" placeholder="Search invasive species…" value={invSearchText}
+              onChange={e=>setInvSearchText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&fetchInvasive()}
+              style={{background:"rgba(255,255,255,.1)",borderColor:"rgba(255,100,80,.3)",color:"#f0e0dc"}}/>
           </div>
-
-          <div className="advisor-form">
-            <div className="advisor-form-title">Build Your Habitat Plan</div>
-            <div className="advisor-grid">
-              <div className="advisor-field">
-                <div className="advisor-label">Target Species</div>
-                <input className="advisor-input" placeholder="e.g. Monarch Butterfly, Wood Duck, Brook Trout…"
-                  value={habSpecies} onChange={e=>setHabSpecies(e.target.value)}
-                  onKeyDown={e=>e.key==="Enter"&&generatePlan()}/>
-              </div>
-              <div className="advisor-field">
-                <div className="advisor-label">State</div>
-                <select className="advisor-fsel" value={habState} onChange={e=>setHabState(e.target.value)}>
-                  {STATES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="advisor-field">
-                <div className="advisor-label">Property Size</div>
-                <select className="advisor-fsel" value={habSize} onChange={e=>setHabSize(e.target.value)}>
-                  {PROPERTY_SIZES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="advisor-field">
-                <div className="advisor-label">Additional Goals (optional)</div>
-                <input className="advisor-input" placeholder="e.g. pollinators, water quality, deer pressure…"
-                  value={habGoals} onChange={e=>setHabGoals(e.target.value)}/>
-              </div>
-            </div>
-
-            <div className="advisor-label" style={{marginBottom:10}}>Property Type</div>
-            <div className="property-cards">
-              {PROPERTY_TYPES.map(p=>(
-                <div key={p.id} className={`prop-card${habPropType===p.id?" active":""}`} onClick={()=>setHabPropType(p.id)}>
-                  <div className="prop-card-icon">{p.icon}</div>
-                  <div className="prop-card-label">{p.label}</div>
-                  <div className="prop-card-desc">{p.desc}</div>
+          <select className="fsel" value={activeState} onChange={e=>setActiveState(e.target.value)}
+            style={{background:"rgba(255,255,255,.1)",borderColor:"rgba(255,100,80,.3)",color:"#f0e0dc"}}>
+            {STATES.map(s=><option key={s}>{s}</option>)}
+          </select>
+          <button className="go-btn" style={{background:"#8a2010"}} onClick={()=>fetchInvasive()} disabled={invLoading}>
+            {invLoading?<><Spinner/>Loading…</>:"Search Invasives"}
+          </button>
+        </div>
+        <div className="cat-strip" style={{background:"#fdf0ee",borderBottom:"1px solid #f0c8c0"}}>
+          {INVASIVE_CATEGORIES.map(c=>(
+            <div key={c.id} className={`cat-pill${invCatId===c.id?" active":""}`}
+              style={invCatId===c.id?{background:c.color,borderColor:c.color}:{borderColor:"#e0b0a8",color:"#8a3020"}}
+              onClick={()=>setInvCatId(c.id)}>{c.icon} {c.label}</div>
+          ))}
+        </div>
+        {!invHasSearched && (
+          <div className="featured" style={{background:"#fdf0ee"}}>
+            <div className="section-label">Featured Invasive Collections</div>
+            <div className="feat-chips">
+              {INVASIVE_FEATURED.map(f=>(
+                <div key={f.label} className="feat-chip" style={{borderColor:"#e0b0a8"}}
+                  onClick={()=>{ setActiveState(f.state); setInvCatId(f.category); setTimeout(()=>fetchInvasive(),50); }}>
+                  ⚠️ {f.label}
                 </div>
               ))}
             </div>
-
-            <button className="advisor-btn" onClick={generatePlan} disabled={habLoading||!habSpecies.trim()}>
-              {habLoading?<><Spinner teal/>Generating Plan…</>:"Generate Habitat Plan"}
-            </button>
           </div>
-
-          {/* Examples */}
-          {!habPlan && (
-            <div className="advisor-examples" style={{paddingBottom:24}}>
-              <div className="section-label" style={{marginBottom:10}}>Example Plans</div>
-              <div className="feat-chips">
-                {HABITAT_EXAMPLES.map(ex=>(
-                  <div key={ex.species+ex.state} className="feat-chip" onClick={()=>applyHabExample(ex)}>
-                    {ex.species} · {ex.state} · {PROPERTY_TYPES.find(p=>p.id===ex.property)?.icon}
+        )}
+        {invLoading && <SkeletonGrid count={PAGE_SIZE}/>}
+        {!invLoading && invHasSearched && <>
+          <div className="results-meta">
+            <div className="results-count" style={{color:"#b03020"}}>{invSpecies.length} invasive species · {activeState}</div>
+          </div>
+          <div className="grid">
+            {invSpecies.length===0 ? (
+              <div className="state-box"><div className="state-ico">🔍</div><div className="state-t">No results found</div><div className="state-s">Try a different state or category.</div></div>
+            ) : invSpecies.map((sp,i)=>{
+              const cm = INVASIVE_CATEGORIES.find(c=>c.id===sp.category)||INVASIVE_CATEGORIES[0];
+              return (
+                <div key={i} className="card" onClick={()=>openModal({...sp,isInvasive:true})}
+                  style={{borderTop:"3px solid #c03020"}}>
+                  <div className="card-img-wrap">
+                    {cardPhotos[sp.latin]
+                      ? <img src={cardPhotos[sp.latin]} alt={sp.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
+                      : null}
+                    <div style={{display:cardPhotos[sp.latin]?"none":"flex",width:"100%",height:"100%",alignItems:"center",justifyContent:"center",fontSize:"52px",background:"#fdf0ee",flexDirection:"column",gap:"6px"}}>
+                      <span>{cm.icon}</span>
+                      <span style={{fontSize:"10px",color:"#b03020",letterSpacing:"1px"}}>Loading photo…</span>
+                    </div>
+                    <div style={{position:"absolute",top:8,left:8,background:"#c03020",color:"white",fontSize:"9px",padding:"2px 7px",borderRadius:"2px",letterSpacing:"1px",textTransform:"uppercase",fontWeight:700}}>Invasive</div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Plan Result */}
-          {habPlan && !habPlan.error && (
-            <div className="advisor-result">
-              <div className="plan-header">
-                <div className="plan-header-title">Habitat Plan: {habPlan.species}</div>
-                <div className="plan-header-meta">
-                  <span>📍 {habPlan.state}</span>
-                  <span>🏡 {habPlan.prop}</span>
-                  <span>📐 {habPlan.size}</span>
+                  <div className="card-bar" style={{background:"#c03020"}}/>
+                  <div className="card-body">
+                    <div className="cpill" style={{background:"#fde8e4",color:"#8a2010"}}>{cm.icon} {cm.label}</div>
+                    <div className="card-name">{sp.name}</div>
+                    <div className="card-latin">{sp.latin}</div>
+                    <div className="card-desc">{sp.description}</div>
+                  </div>
+                  <div className="card-foot">
+                    {sp.origin&&<span className="tag" style={{background:"#fde8e4",color:"#8a2010"}}>🌍 {sp.origin.slice(0,25)}</span>}
+                    {sp.size&&<span className="tag">📏 {sp.size}</span>}
+                  </div>
                 </div>
-              </div>
-              <div className="plan-sections">
-                {habPlan.sections.map((sec,i)=>(
-                  <div key={i} className="plan-section">
-                    <div className="plan-section-hdr" onClick={()=>toggleSection(i)}>
-                      <span className="plan-section-icon">{sectionIcon(sec.title)}</span>
-                      <span className="plan-section-title">{sec.title}</span>
-                      <span className="plan-section-toggle">{openSections[i]?"▲":"▼"}</span>
-                    </div>
-                    <div className={`plan-section-body${openSections[i]?"":" collapsed"}`}>
-                      {sec.lines.map((line,j)=>(
-                        <div key={j} className="action-item">
-                          <div className="action-dot"/>
-                          <div className="action-text">{line}</div>
-                        </div>
-                      ))}
+              );
+            })}
+          </div>
+          {invHasMore&&<div style={{textAlign:"center",padding:"0 0 20px"}}>
+            <button className="load-more-btn" onClick={()=>fetchInvasive(true)} disabled={invLoadingMore}>
+              {invLoadingMore?<><Spinner/>Loading more…</>:"Load more invasive species"}
+            </button>
+          </div>}
+        </>}
+        {!invLoading&&!invHasSearched&&(
+          <div className="grid">
+            <div className="state-box">
+              <div className="state-ico">⚠️</div>
+              <div className="state-t">Explore Invasive Species</div>
+              <div className="state-s">Select a state and category, then click <strong>Search Invasives</strong> to find species threatening your area.</div>
+            </div>
+          </div>
+        )}
+      </>}
+
+      {/* ══ WILDLIFE TAB ════════════════════════════════════════════════════ */}
+      {tab==="Wildlife" && <>
+        <div className="controls">
+          <div className="search-wrap">
+            <span className="s-ico">⌕</span>
+            <input className="srch" placeholder="Search native wildlife…" value={wldSearchText}
+              onChange={e=>setWldSearchText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&fetchWildlife()}/>
+          </div>
+          <select className="fsel" value={activeState} onChange={e=>setActiveState(e.target.value)}>
+            {STATES.map(s=><option key={s}>{s}</option>)}
+          </select>
+          <select className="fsel" value={habitat} onChange={e=>setHabitat(e.target.value)}>
+            {HABITATS.map(h=><option key={h}>{h}</option>)}
+          </select>
+          <select className="fsel" value={season} onChange={e=>setSeason(e.target.value)}>
+            {SEASONS.map(s=><option key={s}>{s}</option>)}
+          </select>
+          <button className="go-btn" onClick={()=>fetchWildlife()} disabled={wldLoading}>
+            {wldLoading?<><Spinner/>Loading…</>:"Discover"}
+          </button>
+        </div>
+        <div className="cat-strip">
+          {WILDLIFE_CATEGORIES.map(c=>(
+            <div key={c.id} className={`cat-pill${wldCatId===c.id?" active":""}`}
+              style={wldCatId===c.id?{background:c.color,borderColor:c.color}:{}}
+              onClick={()=>setWldCatId(c.id)}>{c.icon} {c.label}</div>
+          ))}
+        </div>
+        {!wldHasSearched && (
+          <div className="featured">
+            <div className="section-label">Featured Wildlife Collections</div>
+            <div className="feat-chips">
+              {WILDLIFE_FEATURED.map(f=>(
+                <div key={f.label} className="feat-chip"
+                  onClick={()=>{ setActiveState(f.state); setWldCatId(f.category); setTimeout(()=>fetchWildlife(),50); }}>
+                  {getCatMeta(f.category,"wildlife").icon} {f.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {wldLoading && <SkeletonGrid count={PAGE_SIZE}/>}
+        {!wldLoading && wldHasSearched && <>
+          <div className="results-meta">
+            <div className="results-count">{wldSpecies.length} species · {activeState} · {getCatMeta(wldCatId,"wildlife").label}</div>
+          </div>
+          <div className="grid">
+            {wldSpecies.length===0 ? (
+              <div className="state-box"><div className="state-ico">🔍</div><div className="state-t">No species found</div><div className="state-s">Try adjusting your filters.</div></div>
+            ) : wldSpecies.reduce((acc,sp,i)=>{
+              const cm=getCatMeta(sp.category,"wildlife");
+              acc.push(
+                <div key={`sp-${i}`} className="card" onClick={()=>openModal(sp)}>
+                  <div className="card-img-wrap">
+                    {cardPhotos[sp.latin]
+                      ? <img src={cardPhotos[sp.latin]} alt={sp.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
+                      : null}
+                    <div style={{display:cardPhotos[sp.latin]?"none":"flex",width:"100%",height:"100%",alignItems:"center",justifyContent:"center",fontSize:"52px",background:"var(--cream)",flexDirection:"column",gap:"6px"}}>
+                      <span>{cm.icon}</span>
+                      <span style={{fontSize:"10px",color:"var(--stone)",letterSpacing:"1px"}}>Loading photo…</span>
                     </div>
                   </div>
-                ))}
-              </div>
-              <div style={{marginTop:18,textAlign:"center"}}>
-                <button className="advisor-btn" onClick={generatePlan} disabled={habLoading}
-                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)"}}>
-                  {habLoading?<><Spinner teal/>Regenerating…</>:"↻ Regenerate Plan"}
-                </button>
-              </div>
-              <div style={{padding:"0 0 8px"}}><AdSlotInline/></div>
-            </div>
-          )}
-          {habPlan?.error && (
-            <div style={{padding:"20px 40px",color:"#b03000"}}>Error generating plan. Please try again.</div>
-          )}
-        </div>
-      )}
+                  <div className="card-bar" style={{background:cm.color}}/>
+                  <div className="card-body">
+                    <div className="cpill">{cm.icon} {cm.label}</div>
+                    <div className="card-name">{sp.name}</div>
+                    <div className="card-latin">{sp.latin}</div>
+                    <div className="card-desc">{sp.description}</div>
+                  </div>
+                  <div className="card-foot">
+                    {sp.season&&<span className="tag">📅 {sp.season}</span>}
+                    {sp.habitat&&<span className="tag">🏕 {sp.habitat}</span>}
+                    {sp.size&&<span className="tag">📏 {sp.size}</span>}
+                  </div>
+                </div>
+              );
+              if ((i+1)%6===0) acc.push(<AdSlotCard key={`ad-${i}`}/>);
+              return acc;
+            },[])}
+          </div>
+          {wldHasMore&&<div style={{textAlign:"center",padding:"0 0 20px"}}>
+            <button className="load-more-btn" onClick={()=>fetchWildlife(true)} disabled={wldLoadingMore}>
+              {wldLoadingMore?<><Spinner/>Loading more…</>:"Load more wildlife"}
+            </button>
+          </div>}
+          <AdSlotBanner/>
+        </>}
+        {!wldLoading&&!wldHasSearched&&(
+          <div className="grid">
+            <div className="state-box"><div className="state-ico">🦌</div><div className="state-t">Explore Native Wildlife</div>
+              <div className="state-s">Select a state and wildlife category, then click <strong>Discover</strong>.</div></div>
+          </div>
+        )}
+      </>}
 
       {/* ══ AI IDENTIFIER ══════════════════════════════════════════════════ */}
       {tab==="AI Identifier" && (
@@ -1627,9 +1798,10 @@ IUCN/NatureServe status and any population trend notes.`;
           <h3>Habitat Advisor</h3>
           <p>Enter any native species, your state, property type, and size to receive a full habitat improvement plan — from quick 30-day wins to multi-year management strategies. Plans cover native plantings, invasive removal, water features, nesting structures, seasonal calendars, and relevant certification programs.</p>
           <h3>How to Use</h3>
-          <p><strong>Browse &amp; Discover:</strong> Select state and category, click Discover. Click any card for a full field guide entry with habitat quick-tips.</p>
-          <p><strong>Habitat Advisor:</strong> Fill in the form and generate a detailed, property-specific habitat improvement plan.</p>
-          <p><strong>AI Identifier:</strong> Describe a field observation to get expert species identification.</p>
+          <p><strong>Native:</strong> Browse native plants by state, category, habitat and season. Click any card for a full field guide entry with 7 tabbed sections of detailed information.</p>
+          <p><strong>Invasive:</strong> Search for invasive species threatening your area. Each card shows identification, origin, spread, ecological impact, and control methods.</p>
+          <p><strong>Wildlife:</strong> Explore native mammals, birds, fish, reptiles, amphibians, and insects by state and habitat.</p>
+          <p><strong>AI Identifier:</strong> Upload a photo or describe a field observation to get expert species identification.</p>
           <h3>Free vs Pro</h3>
           <p>The free version is supported by generic advertising and includes {FREE_AI_LIMIT} AI identifications per session. <strong>Pro</strong> ({"$"}{PRO_PRICE_MONTHLY}/month or {"$"}{PRO_PRICE_YEARLY}/year) gives you unlimited identifications, unlimited habitat plans, a completely ad-free experience, and priority AI speed.</p>
           {!isPro && <button className="upgrade-cta" style={{marginTop:12}} onClick={openUpgrade}>Upgrade to Pro →</button>}
@@ -1642,21 +1814,26 @@ IUCN/NatureServe status and any population trend notes.`;
       {selected && (() => {
         const cm = getCatMeta(selected.category);
         const d = detailData;
-        const TABS_FG = [
-          {id:"overview", label:"Overview"},
-          {id:"identification", label:"Identification"},
-          {id:"range", label:"Range & Habitat"},
-          {id:"behavior", label:"Behavior"},
-          {id:"reproduction", label:"Reproduction"},
-          {id:"conservation", label:"Conservation"},
-          {id:"fieldnotes", label:"Field Notes"},
+        const TABS_FG = selected.isInvasive ? [
+          {id:"overview",      label:"Overview"},
+          {id:"identification",label:"Identification"},
+          {id:"spread",        label:"Spread & Impact"},
+          {id:"control",       label:"Control & Removal"},
+        ] : [
+          {id:"overview",      label:"Overview"},
+          {id:"identification",label:"Identification"},
+          {id:"range",         label:"Range & Habitat"},
+          {id:"behavior",      label:"Behavior"},
+          {id:"reproduction",  label:"Reproduction"},
+          {id:"conservation",  label:"Conservation"},
+          {id:"fieldnotes",    label:"Field Notes"},
         ];
         return (
           <div className="overlay" onClick={()=>setSelected(null)}>
             <div className="modal" onClick={e=>e.stopPropagation()}>
 
               {/* PHOTO GALLERY */}
-              <div style={{position:"relative",height:260,background:"#111",overflow:"hidden"}}>
+              <div style={{position:"relative",height:220,background:"#111",overflow:"hidden",flexShrink:0}}>
                 {inatLoading && !inatPhotos.length ? (
                   <div className="modal-ph" style={{background:cm.color+"18"}}>
                     <span>{cm.icon}</span>
@@ -1969,9 +2146,46 @@ IUCN/NatureServe status and any population trend notes.`;
                     </div>
                   )}
 
-                </>) : (
-                  <div style={{fontSize:13,color:"var(--stone)",lineHeight:1.7}}>{selected.description}</div>
-                )}
+                  {/* ── INVASIVE: SPREAD & IMPACT ── */}
+                  {detailTab==="spread" && selected.isInvasive && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title" style={{color:"#b03020"}}>🌍 Origin &amp; Spread</div>
+                        <div className="fg-grid">
+                          {selected.origin && <div className="fg-fact full"><div className="fg-fact-lbl">Native Origin</div><div className="fg-fact-val">{selected.origin}</div></div>}
+                          {selected.spread && <div className="fg-fact full"><div className="fg-fact-lbl">How It Spreads</div><div className="fg-fact-val">{selected.spread}</div></div>}
+                        </div>
+                      </div>
+                      {selected.impact && (
+                        <div className="fg-section">
+                          <div className="fg-section-title" style={{color:"#b03020"}}>⚠️ Ecological Impact</div>
+                          <div className="fg-fact full" style={{borderColor:"#f0c8c0",background:"#fdf0ee"}}>
+                            <div className="fg-fact-val" style={{color:"#8a2010"}}>{selected.impact}</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── INVASIVE: CONTROL ── */}
+                  {detailTab==="control" && selected.isInvasive && (
+                    <div>
+                      <div className="fg-section">
+                        <div className="fg-section-title" style={{color:"#2d6b1a"}}>🛠 Control &amp; Removal</div>
+                        {selected.control && (
+                          <div className="fg-fact full" style={{borderColor:"#c8ddb8",background:"#f0f8ec"}}>
+                            <div className="fg-fact-val" style={{color:"#2a3820"}}>{selected.control}</div>
+                          </div>
+                        )}
+                        {d?.conservation?.what_you_can_do && (
+                          <div className="fg-highlight" style={{marginTop:14}}>
+                            <div className="fg-highlight-lbl">What You Can Do</div>
+                            <div className="fg-highlight-val">{d.conservation.what_you_can_do}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
           </div>
