@@ -861,6 +861,8 @@ function FieldGuide() {
   const [designerGoals, setDesignerGoals] = useState("");
   const [designerLoading, setDesignerLoading] = useState(false);
   const [designerResult, setDesignerResult] = useState(null);
+  const [renderLoading, setRenderLoading] = useState(false);
+  const [renderedImage, setRenderedImage] = useState(null);
 
   // Habitat Advisor
   const [habState, setHabState] = useState("Pennsylvania");
@@ -1359,6 +1361,39 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
       setDesignerResult({ error: true, message: e.message });
     }
     setDesignerLoading(false);
+  }
+
+  async function fetchGardenRender() {
+    if (!designerResult || !designerImage || renderLoading) return;
+    setRenderLoading(true); setRenderedImage(null);
+
+    // Build a detailed prompt from the design result
+    const plantNames = designerResult.plants?.map(p => p.name).join(", ") || "native wildflowers and plants";
+    const prompt = `A beautiful native plant garden transformation, lush and naturalistic, featuring ${plantNames}. Professional landscape photography, golden hour lighting, vibrant blooming flowers, established garden, photorealistic, high detail, 8k`;
+    const negativePrompt = "ugly, deformed, noisy, blurry, low quality, artificial, plastic, cartoon, painting";
+
+    try {
+      // Call our Vercel proxy for Replicate
+      const res = await fetch("/api/render", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          negative_prompt: negativePrompt,
+          image: designerImage.base64,
+          strength: 0.7,
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (data.output) {
+        setRenderedImage(Array.isArray(data.output) ? data.output[0] : data.output);
+      }
+    } catch(e) {
+      console.error("Render error:", e);
+      setRenderedImage({ error: e.message });
+    }
+    setRenderLoading(false);
   }
 
   async function fetchModalHabitat(sp, propType) {
@@ -2239,10 +2274,55 @@ IUCN/NatureServe status and any population trend notes.`;
 
               <div style={{marginTop:16,textAlign:"center"}}>
                 <button className="designer-btn" onClick={fetchGardenDesign} disabled={designerLoading}
-                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)"}}>
-                  {designerLoading?<><Spinner/>Redesigning…</>:"↻ Generate New Design"}
+                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)",marginRight:10}}>
+                  {designerLoading?<><Spinner/>Redesigning…</>:"↻ New Design"}
                 </button>
+                {designerImage && (
+                  <button className="designer-btn" onClick={fetchGardenRender} disabled={renderLoading}
+                    style={{background:"#4a7c38"}}>
+                    {renderLoading?<><Spinner/>Generating visual…</>:"🎨 Generate Garden Visual"}
+                  </button>
+                )}
               </div>
+
+              {/* SIDE BY SIDE COMPARISON */}
+              {(renderLoading || renderedImage) && (
+                <div style={{marginTop:24,borderTop:"2px solid var(--mist)",paddingTop:20}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"var(--ink)",marginBottom:4}}>Garden Visualization</div>
+                  <div style={{fontSize:12,color:"var(--stone)",marginBottom:16}}>AI-generated rendering inspired by your space with the recommended native plants</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                    {/* Original */}
+                    <div>
+                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--stone)",marginBottom:6,fontWeight:600}}>Before — Your Space</div>
+                      <img src={designerImage.previewUrl} alt="Original garden"
+                        style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
+                    </div>
+                    {/* Rendered */}
+                    <div>
+                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--moss)",marginBottom:6,fontWeight:600}}>After — Native Garden Vision</div>
+                      {renderLoading ? (
+                        <div style={{width:"100%",aspectRatio:"4/3",background:"var(--cream)",borderRadius:4,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,border:"1px solid var(--mist)"}}>
+                          <Spinner/>
+                          <div style={{fontSize:12,color:"var(--stone)"}}>Generating your native garden…</div>
+                          <div style={{fontSize:11,color:"var(--stone)",opacity:.7}}>This takes about 20-30 seconds</div>
+                        </div>
+                      ) : renderedImage?.error ? (
+                        <div style={{width:"100%",aspectRatio:"4/3",background:"#fdf0ee",borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#b03020",border:"1px solid #f0c8c0",padding:16,textAlign:"center"}}>
+                          Could not generate visual: {renderedImage.error}
+                        </div>
+                      ) : renderedImage ? (
+                        <img src={renderedImage} alt="Native garden rendering"
+                          style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
+                      ) : null}
+                    </div>
+                  </div>
+                  {renderedImage && !renderedImage.error && (
+                    <div style={{marginTop:10,fontSize:11,color:"var(--stone)",textAlign:"center",fontStyle:"italic"}}>
+                      AI-generated visualization · Not a photo · Plants and layout are illustrative
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

@@ -5,6 +5,9 @@
   "functions": {
     "api/claude.js": {
       "maxDuration": 60
+    },
+    "api/render.js": {
+      "maxDuration": 60
     }
   }
 }
