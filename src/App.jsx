@@ -907,7 +907,9 @@ category must be one of: wildflower|tree|fern|grass|mushroom
 description: 2 vivid sentences with key identification features. Return ONLY the array.`,
         3000
       );
-      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      let parsed;
+      try { parsed = JSON.parse(raw.replace(/```json|```/g,"").trim()); }
+      catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       if (loadMore) { setSpecies(prev=>[...prev,...parsed]); setPage(currentPage); }
       else setSpecies(parsed);
       setHasMore(parsed.length===PAGE_SIZE);
@@ -937,7 +939,9 @@ category: mammal|bird|fish|reptile|amphibian|insect
 description: 2 sentences with ID features. Return ONLY the array.`,
         2000
       );
-      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      let parsed;
+      try { parsed = JSON.parse(raw.replace(/```json|```/g,"").trim()); }
+      catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       if (loadMore) { setWldSpecies(prev=>[...prev,...parsed]); setWldPage(currentPage); }
       else setWldSpecies(parsed);
       setWldHasMore(parsed.length===PAGE_SIZE);
@@ -973,7 +977,9 @@ control: 1 sentence removal method.
 Return ONLY the array.`,
         2000
       );
-      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      let parsed;
+      try { parsed = JSON.parse(raw.replace(/```json|```/g,"").trim()); }
+      catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       if (loadMore) { setInvSpecies(prev=>[...prev,...parsed]); setInvPage(currentPage); }
       else setInvSpecies(parsed);
       setInvHasMore(parsed.length===PAGE_SIZE);
@@ -1042,7 +1048,9 @@ Return this exact JSON with all fields filled in:
 }`,
         3500
       );
-      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      let parsed;
+      try { parsed = JSON.parse(raw.replace(/```json|```/g,"").trim()); }
+      catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       setDetailData(parsed);
     } catch(e) {
       console.error("fetchDetail error:", e);
@@ -1221,7 +1229,9 @@ Return a JSON object:
 Provide 4-5 native alternatives. All alternatives must be truly native to ${finderState}.`,
         2500
       );
-      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      let parsed;
+      try { parsed = JSON.parse(raw.replace(/```json|```/g,"").trim()); }
+      catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       setFinderResults(parsed);
       setFinderSearched(true);
       // Fetch photos for alternatives
@@ -1304,7 +1314,20 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
       const text = data.content?.map(b => b.text || "").join("") || "";
-      const parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
+      // Try multiple ways to extract JSON
+      let parsed;
+      try {
+        // First try direct parse after stripping markdown
+        parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
+      } catch(parseErr) {
+        // Try to find JSON object in the response
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+          parsed = JSON.parse(match[0]);
+        } else {
+          throw new Error("Could not parse response as JSON");
+        }
+      }
       setDesignerResult(parsed);
     } catch(e) {
       console.error("Garden designer error:", e);
