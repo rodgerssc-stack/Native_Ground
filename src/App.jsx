@@ -1298,10 +1298,12 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
   async function fetchGardenDesign() {
     if (designerLoading) return;
     setDesignerLoading(true); setDesignerResult(null);
+    setRenderedImage(null);
+    if (designerImage) setRenderLoading(true);
     const goalsClause = designerGoals.trim() ? ` Goals: ${designerGoals.trim()}.` : "";
     try {
       let messages;
-      const prompt = `Design a native plant garden for ${designerState}. Space: ${designerSize}. Light: ${designerSun}.${goalsClause}
+      const planPrompt = `Design a native plant garden for ${designerState}. Space: ${designerSize}. Light: ${designerSun}.${goalsClause}
 
 Return JSON:
 {
@@ -1321,14 +1323,15 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
           role: "user",
           content: [
             { type: "image", source: { type: "base64", media_type: designerImage.mediaType, data: designerImage.base64 } },
-            { type: "text", text: `I have uploaded a photo of my garden space. ${prompt}` }
+            { type: "text", text: `I have uploaded a photo of my garden space. ${planPrompt}` }
           ]
         }];
       } else {
-        messages = [{ role: "user", content: prompt }];
+        messages = [{ role: "user", content: planPrompt }];
       }
 
-      const res = await fetch("/api/claude", {
+      // Run plan and visual generation in parallel
+      const planPromise = fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1338,11 +1341,27 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
           messages
         })
       });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error.message);
-      const text = data.content?.map(b => b.text || "").join("") || "";
+
+      // Start render in parallel if image provided
+      let renderPromise = null;
+      if (designerImage) {
+        const renderPrompt = `A lush native plant garden in ${designerState}, featuring wildflowers and native plants in full bloom, naturalistic landscape design, professional garden photography, golden hour lighting, vibrant colors, photorealistic, 4k`;
+        renderPromise = fetch("/api/render", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: renderPrompt,
+            negative_prompt: "ugly, deformed, blurry, low quality, cartoon, artificial, plastic plants"
+          })
+        });
+      }
+
+      // Await plan result
+      const planRes = await planPromise;
+      const planData = await planRes.json();
+      if (planData.error) throw new Error(planData.error.message);
+      const text = planData.content?.map(b => b.text || "").join("") || "";
       if (!text) throw new Error("Empty response from AI");
-      // Try multiple ways to extract JSON
       let parsed;
       try {
         parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
@@ -1356,44 +1375,30 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
         }
       }
       setDesignerResult(parsed);
+      setDesignerLoading(false);
+
+      // Await render result if running
+      if (renderPromise) {
+        try {
+          const renderRes = await renderPromise;
+          const renderData = await renderRes.json();
+          if (renderData.error) {
+            setRenderedImage({ error: renderData.error });
+          } else if (renderData.output) {
+            setRenderedImage(Array.isArray(renderData.output) ? renderData.output[0] : renderData.output);
+          }
+        } catch(re) {
+          setRenderedImage({ error: re.message });
+        }
+        setRenderLoading(false);
+      }
+
     } catch(e) {
       console.error("Garden designer error:", e);
       setDesignerResult({ error: true, message: e.message });
+      setDesignerLoading(false);
+      setRenderLoading(false);
     }
-    setDesignerLoading(false);
-  }
-
-  async function fetchGardenRender() {
-    if (!designerResult || !designerImage || renderLoading) return;
-    setRenderLoading(true); setRenderedImage(null);
-
-    // Build a detailed prompt from the design result
-    const plantNames = designerResult.plants?.map(p => p.name).join(", ") || "native wildflowers and plants";
-    const prompt = `A beautiful native plant garden transformation, lush and naturalistic, featuring ${plantNames}. Professional landscape photography, golden hour lighting, vibrant blooming flowers, established garden, photorealistic, high detail, 8k`;
-    const negativePrompt = "ugly, deformed, noisy, blurry, low quality, artificial, plastic, cartoon, painting";
-
-    try {
-      // Call our Vercel proxy for Replicate
-      const res = await fetch("/api/render", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          negative_prompt: negativePrompt,
-          image: designerImage.base64,
-          strength: 0.7,
-        })
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      if (data.output) {
-        setRenderedImage(Array.isArray(data.output) ? data.output[0] : data.output);
-      }
-    } catch(e) {
-      console.error("Render error:", e);
-      setRenderedImage({ error: e.message });
-    }
-    setRenderLoading(false);
   }
 
   async function fetchModalHabitat(sp, propType) {
@@ -2198,15 +2203,59 @@ IUCN/NatureServe status and any population trend notes.`;
             </div>
 
             <button className="designer-btn" onClick={fetchGardenDesign} disabled={designerLoading}>
-              {designerLoading ? <><Spinner/>Designing your garden…</> : "Generate Native Garden Plan"}
+              {designerLoading ? <><Spinner/>Generating your garden plan{designerImage?" & visual":""}…</> : `Generate Native Garden Plan${designerImage?" & Visual":""}`}
             </button>
           </div>
 
           {designerResult && !designerResult.error && (
             <div className="designer-result">
-              <div className="designer-result-title">{designerResult.garden_name}</div>
-              <div className="designer-result-sub">{designerState} · {designerSize} · {designerSun}</div>
-              <p style={{fontSize:14,lineHeight:1.8,color:"#3e3428",marginBottom:20}}>{designerResult.design_description}</p>
+
+              {/* SIDE BY SIDE COMPARISON — shown first at top */}
+              {designerImage && (
+                <div style={{marginBottom:24}}>
+                  <div className="designer-result-title">{designerResult.garden_name}</div>
+                  <div className="designer-result-sub">{designerState} · {designerSize} · {designerSun}</div>
+                  <p style={{fontSize:14,lineHeight:1.8,color:"#3e3428",margin:"10px 0 16px"}}>{designerResult.design_description}</p>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                    <div>
+                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--stone)",marginBottom:6,fontWeight:600}}>Before — Your Space</div>
+                      <img src={designerImage.previewUrl} alt="Original garden"
+                        style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
+                    </div>
+                    <div>
+                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--moss)",marginBottom:6,fontWeight:600}}>After — Native Garden Vision</div>
+                      {renderLoading ? (
+                        <div style={{width:"100%",aspectRatio:"3/2",background:"var(--cream)",borderRadius:4,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"1px solid var(--mist)"}}>
+                          <Spinner/>
+                          <div style={{fontSize:12,color:"var(--stone)"}}>Generating visual…</div>
+                          <div style={{fontSize:11,color:"var(--stone)",opacity:.7}}>~20 seconds</div>
+                        </div>
+                      ) : renderedImage?.error ? (
+                        <div style={{width:"100%",aspectRatio:"3/2",background:"#fdf0ee",borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#b03020",border:"1px solid #f0c8c0",padding:16,textAlign:"center"}}>
+                          Visual unavailable — {renderedImage.error}
+                        </div>
+                      ) : renderedImage ? (
+                        <>
+                          <img src={renderedImage} alt="Native garden rendering"
+                            style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
+                          <div style={{fontSize:10,color:"var(--stone)",marginTop:5,fontStyle:"italic",textAlign:"center"}}>
+                            AI-generated · illustrative only
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Title and description when no photo */}
+              {!designerImage && (
+                <div style={{marginBottom:16}}>
+                  <div className="designer-result-title">{designerResult.garden_name}</div>
+                  <div className="designer-result-sub">{designerState} · {designerSize} · {designerSun}</div>
+                  <p style={{fontSize:14,lineHeight:1.8,color:"#3e3428",marginTop:8}}>{designerResult.design_description}</p>
+                </div>
+              )}
 
               {/* Plant list */}
               {designerResult.plants?.length > 0 && (
@@ -2274,55 +2323,10 @@ IUCN/NatureServe status and any population trend notes.`;
 
               <div style={{marginTop:16,textAlign:"center"}}>
                 <button className="designer-btn" onClick={fetchGardenDesign} disabled={designerLoading}
-                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)",marginRight:10}}>
-                  {designerLoading?<><Spinner/>Redesigning…</>:"↻ New Design"}
+                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)"}}>
+                  {designerLoading?<><Spinner/>Regenerating…</>:"↻ Generate New Design"}
                 </button>
-                {designerImage && (
-                  <button className="designer-btn" onClick={fetchGardenRender} disabled={renderLoading}
-                    style={{background:"#4a7c38"}}>
-                    {renderLoading?<><Spinner/>Generating visual…</>:"🎨 Generate Garden Visual"}
-                  </button>
-                )}
               </div>
-
-              {/* SIDE BY SIDE COMPARISON */}
-              {(renderLoading || renderedImage) && (
-                <div style={{marginTop:24,borderTop:"2px solid var(--mist)",paddingTop:20}}>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"var(--ink)",marginBottom:4}}>Garden Visualization</div>
-                  <div style={{fontSize:12,color:"var(--stone)",marginBottom:16}}>AI-generated rendering inspired by your space with the recommended native plants</div>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                    {/* Original */}
-                    <div>
-                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--stone)",marginBottom:6,fontWeight:600}}>Before — Your Space</div>
-                      <img src={designerImage.previewUrl} alt="Original garden"
-                        style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
-                    </div>
-                    {/* Rendered */}
-                    <div>
-                      <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--moss)",marginBottom:6,fontWeight:600}}>After — Native Garden Vision</div>
-                      {renderLoading ? (
-                        <div style={{width:"100%",aspectRatio:"4/3",background:"var(--cream)",borderRadius:4,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,border:"1px solid var(--mist)"}}>
-                          <Spinner/>
-                          <div style={{fontSize:12,color:"var(--stone)"}}>Generating your native garden…</div>
-                          <div style={{fontSize:11,color:"var(--stone)",opacity:.7}}>This takes about 20-30 seconds</div>
-                        </div>
-                      ) : renderedImage?.error ? (
-                        <div style={{width:"100%",aspectRatio:"4/3",background:"#fdf0ee",borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#b03020",border:"1px solid #f0c8c0",padding:16,textAlign:"center"}}>
-                          Could not generate visual: {renderedImage.error}
-                        </div>
-                      ) : renderedImage ? (
-                        <img src={renderedImage} alt="Native garden rendering"
-                          style={{width:"100%",borderRadius:4,display:"block",border:"1px solid var(--mist)"}}/>
-                      ) : null}
-                    </div>
-                  </div>
-                  {renderedImage && !renderedImage.error && (
-                    <div style={{marginTop:10,fontSize:11,color:"var(--stone)",textAlign:"center",fontStyle:"italic"}}>
-                      AI-generated visualization · Not a photo · Plants and layout are illustrative
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           )}
 
