@@ -1327,6 +1327,8 @@ Include 6-10 plants all native to ${designerState}. Make it beautiful and ecolog
     }
     setDesignerLoading(false);
   }
+
+  async function fetchModalHabitat(sp, propType) {
     setModalHabLoading(true); setModalHabResult("");
     const prop = PROPERTY_TYPES.find(p=>p.id===propType);
     try {
