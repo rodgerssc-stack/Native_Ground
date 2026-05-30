@@ -1264,35 +1264,20 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
     const goalsClause = designerGoals.trim() ? ` Goals: ${designerGoals.trim()}.` : "";
     try {
       let messages;
-      const prompt = `Design a native plant garden for ${designerState}.
-Space: ${designerSize}. Light: ${designerSun}.${goalsClause}
+      const prompt = `Design a native plant garden for ${designerState}. Space: ${designerSize}. Light: ${designerSun}.${goalsClause}
 
-Return a JSON object:
+Return JSON:
 {
-  "garden_name": "creative name for this garden design",
-  "design_description": "2-3 sentences describing the overall design concept",
+  "garden_name": "garden name",
+  "design_description": "2 sentences about the design",
   "plants": [
-    {
-      "name": "common name",
-      "latin": "Latin name",
-      "category": "wildflower or tree or fern or grass",
-      "quantity": "how many plants",
-      "placement": "where in the garden to place it",
-      "bloom_months": [4,5,6],
-      "peak_months": [5],
-      "color": "flower or foliage color"
-    }
+    {"name":"common name","latin":"Latin name","category":"wildflower or tree or fern or grass","quantity":"number","placement":"where to plant","bloom_months":[4,5],"peak_months":[5],"color":"color"}
   ],
-  "seasonal_description": {
-    "spring": "what the garden looks like in spring",
-    "summer": "what it looks like in summer",
-    "fall": "fall appearance",
-    "winter": "winter interest"
-  },
-  "maintenance": "brief maintenance notes",
-  "wildlife_expected": "what wildlife this garden will attract"
+  "seasonal_description": {"spring":"spring look","summer":"summer look","fall":"fall look","winter":"winter look"},
+  "maintenance": "maintenance notes",
+  "wildlife_expected": "wildlife attracted"
 }
-Include 6-10 plants all native to ${designerState}. Make it beautiful and ecologically valuable.`;
+Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
 
       if (designerImage) {
         messages = [{
@@ -1311,8 +1296,8 @@ Include 6-10 plants all native to ${designerState}. Make it beautiful and ecolog
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-5",
-          max_tokens: 3000,
-          system: "You are an expert native plant garden designer. Return ONLY valid JSON, no markdown.",
+          max_tokens: 2000,
+          system: "You are a native plant garden designer. Return ONLY valid JSON, no markdown, no explanation.",
           messages
         })
       });
