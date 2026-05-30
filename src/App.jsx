@@ -1261,21 +1261,36 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
 
   function handleDesignerImage(file) {
     if (!file) return;
-    // Accept any image type including iPad HEIC converted to JPEG
     if (!file.type.startsWith("image/") && file.type !== "") return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        const dataUrl = e.target.result;
-        const base64 = dataUrl.split(",")[1];
-        const mediaType = file.type || "image/jpeg";
-        setDesignerImage({ base64, mediaType, previewUrl: dataUrl });
+    // Compress image to max 800px to stay within API limits
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement("canvas");
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
       }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+      setDesignerImage({ base64: dataUrl.split(",")[1], mediaType: "image/jpeg", previewUrl: dataUrl });
     };
-    reader.onerror = () => {
-      alert("Could not read image file. Please try a different photo.");
+    img.onerror = () => {
+      // Fallback without compression
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setDesignerImage({ base64: e.target.result.split(",")[1], mediaType: file.type || "image/jpeg", previewUrl: e.target.result });
+        }
+      };
+      reader.readAsDataURL(file);
     };
-    reader.readAsDataURL(file);
+    img.src = objectUrl;
   }
 
   async function fetchGardenDesign() {
