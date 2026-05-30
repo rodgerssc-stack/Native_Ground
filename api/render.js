@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     // If polling an existing prediction
     if (prediction_id) {
       const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction_id}`, {
-        headers: { 'Authorization': `Token ${apiKey}` }
+        headers: { 'Authorization': `Bearer ${apiKey}` }
       })
       const pollData = await pollRes.json()
       return res.status(200).json({
@@ -25,31 +25,31 @@ export default async function handler(req, res) {
       })
     }
 
-    // Start a new prediction
-    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
+    // Start a new prediction using deployment URL (always latest version)
+    const startRes = await fetch('https://api.replicate.com/v1/models/bytedance/sdxl-lightning-4step/predictions', {
       method: 'POST',
       headers: {
-        'Authorization': `Token ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: "727e49a643e999d602a896c774a0658ffefea21465756a6ce24b7ea4165eba6a",
         input: {
           prompt,
           negative_prompt: negative_prompt || "ugly, deformed, blurry, low quality, cartoon, artificial",
-          width: 768,
-          height: 512,
+          width: 1024,
+          height: 1024,
           num_inference_steps: 4,
           guidance_scale: 0,
           num_outputs: 1,
+          scheduler: "K_EULER",
         }
       })
     })
 
     const prediction = await startRes.json()
+    if (prediction.detail) throw new Error(prediction.detail)
     if (prediction.error) throw new Error(prediction.error)
 
-    // Return prediction ID immediately so browser can poll
     return res.status(200).json({
       prediction_id: prediction.id,
       status: prediction.status,
