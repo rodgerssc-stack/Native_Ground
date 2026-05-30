@@ -863,6 +863,7 @@ function FieldGuide() {
   const [designerResult, setDesignerResult] = useState(null);
   const [renderLoading, setRenderLoading] = useState(false);
   const [renderedImage, setRenderedImage] = useState(null);
+  const [renderStatus, setRenderStatus] = useState("");
 
   // Habitat Advisor
   const [habState, setHabState] = useState("Pennsylvania");
@@ -1298,7 +1299,7 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
   async function fetchGardenDesign() {
     if (designerLoading) return;
     setDesignerLoading(true); setDesignerResult(null);
-    setRenderedImage(null);
+    setRenderedImage(null); setRenderStatus("");
     if (designerImage) setRenderLoading(true);
     const goalsClause = designerGoals.trim() ? ` Goals: ${designerGoals.trim()}.` : "";
     try {
@@ -1392,6 +1393,7 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
             // Poll from browser - no server timeout risk
             const predId = renderData.prediction_id;
             let attempts = 0;
+            setRenderStatus(`Started (ID: ${predId.slice(0,8)}…)`);
             const poll = async () => {
               if (attempts++ > 30) {
                 setRenderedImage({ error: "Timed out - please try again" });
@@ -1406,6 +1408,7 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
                   body: JSON.stringify({ prediction_id: predId })
                 });
                 const pollData = await pollRes.json();
+                setRenderStatus(`Status: ${pollData.status} (attempt ${attempts})`);
                 if (pollData.status === "succeeded" && pollData.output) {
                   setRenderedImage(Array.isArray(pollData.output) ? pollData.output[0] : pollData.output);
                   setRenderLoading(false);
@@ -2263,7 +2266,7 @@ IUCN/NatureServe status and any population trend notes.`;
                         <div style={{width:"100%",aspectRatio:"3/2",background:"var(--cream)",borderRadius:4,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"1px solid var(--mist)"}}>
                           <Spinner/>
                           <div style={{fontSize:12,color:"var(--stone)"}}>Generating visual…</div>
-                          <div style={{fontSize:11,color:"var(--stone)",opacity:.7}}>~20 seconds</div>
+                          <div style={{fontSize:11,color:"var(--stone)",opacity:.7}}>{renderStatus || "Starting…"}</div>
                         </div>
                       ) : renderedImage?.error ? (
                         <div style={{width:"100%",aspectRatio:"3/2",background:"#fdf0ee",borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#b03020",border:"1px solid #f0c8c0",padding:16,textAlign:"center"}}>
