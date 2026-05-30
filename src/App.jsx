@@ -1353,7 +1353,7 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
             prompt: renderPrompt,
             negative_prompt: "ugly, deformed, blurry, low quality, cartoon, artificial, plastic plants"
           })
-        });
+        }).then(r => r.json());
       }
 
       // Await plan result
@@ -1377,20 +1377,55 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
       setDesignerResult(parsed);
       setDesignerLoading(false);
 
-      // Await render result if running
+      // Handle render result - poll from browser if needed
       if (renderPromise) {
         try {
-          const renderRes = await renderPromise;
-          const renderData = await renderRes.json();
+          const renderData = await renderPromise;
           if (renderData.error) {
             setRenderedImage({ error: renderData.error });
+            setRenderLoading(false);
           } else if (renderData.output) {
+            // Already done
             setRenderedImage(Array.isArray(renderData.output) ? renderData.output[0] : renderData.output);
+            setRenderLoading(false);
+          } else if (renderData.prediction_id) {
+            // Poll from browser - no server timeout risk
+            const predId = renderData.prediction_id;
+            let attempts = 0;
+            const poll = async () => {
+              if (attempts++ > 30) {
+                setRenderedImage({ error: "Timed out - please try again" });
+                setRenderLoading(false);
+                return;
+              }
+              await new Promise(r => setTimeout(r, 2000));
+              try {
+                const pollRes = await fetch("/api/render", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ prediction_id: predId })
+                });
+                const pollData = await pollRes.json();
+                if (pollData.status === "succeeded" && pollData.output) {
+                  setRenderedImage(Array.isArray(pollData.output) ? pollData.output[0] : pollData.output);
+                  setRenderLoading(false);
+                } else if (pollData.status === "failed") {
+                  setRenderedImage({ error: pollData.error || "Generation failed" });
+                  setRenderLoading(false);
+                } else {
+                  poll(); // Keep polling
+                }
+              } catch(pe) {
+                setRenderedImage({ error: pe.message });
+                setRenderLoading(false);
+              }
+            };
+            poll();
           }
         } catch(re) {
           setRenderedImage({ error: re.message });
+          setRenderLoading(false);
         }
-        setRenderLoading(false);
       }
 
     } catch(e) {

@@ -9,16 +9,28 @@ export default async function handler(req, res) {
   const apiKey = process.env.REPLICATE_API_TOKEN
   if (!apiKey) return res.status(500).json({ error: 'Replicate API token not configured' })
 
-  const { prompt, negative_prompt } = req.body
+  const { prompt, negative_prompt, prediction_id } = req.body
 
   try {
-    // Use SDXL-Lightning - fastest model, 4 steps, ~5 seconds
+    // If polling an existing prediction
+    if (prediction_id) {
+      const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction_id}`, {
+        headers: { 'Authorization': `Token ${apiKey}` }
+      })
+      const pollData = await pollRes.json()
+      return res.status(200).json({
+        status: pollData.status,
+        output: pollData.output,
+        error: pollData.error
+      })
+    }
+
+    // Start a new prediction
     const startRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
         'Authorization': `Token ${apiKey}`,
         'Content-Type': 'application/json',
-        'Prefer': 'wait=55'  // Ask Replicate to wait up to 55s before returning
       },
       body: JSON.stringify({
         version: "727e49a643e999d602a896c774a0658ffefea21465756a6ce24b7ea4165eba6a",
@@ -29,37 +41,20 @@ export default async function handler(req, res) {
           height: 512,
           num_inference_steps: 4,
           guidance_scale: 0,
-          scheduler: "K_EULER",
           num_outputs: 1,
         }
       })
     })
 
     const prediction = await startRes.json()
+    if (prediction.error) throw new Error(prediction.error)
 
-    // If Replicate waited and it succeeded
-    if (prediction.status === 'succeeded' && prediction.output) {
-      return res.status(200).json({ output: prediction.output })
-    }
-
-    // Otherwise poll a few times
-    if (prediction.id) {
-      for (let i = 0; i < 20; i++) {
-        await new Promise(r => setTimeout(r, 2000))
-        const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-          headers: { 'Authorization': `Token ${apiKey}` }
-        })
-        const pollData = await pollRes.json()
-        if (pollData.status === 'succeeded') {
-          return res.status(200).json({ output: pollData.output })
-        }
-        if (pollData.status === 'failed') {
-          throw new Error(pollData.error || 'Generation failed')
-        }
-      }
-    }
-
-    throw new Error('Generation timed out - please try again')
+    // Return prediction ID immediately so browser can poll
+    return res.status(200).json({
+      prediction_id: prediction.id,
+      status: prediction.status,
+      output: prediction.output || null
+    })
 
   } catch (error) {
     return res.status(500).json({ error: error.message })
@@ -67,5 +62,5 @@ export default async function handler(req, res) {
 }
 
 export const config = {
-  maxDuration: 60,
+  maxDuration: 30,
 }
