@@ -1308,7 +1308,7 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
       setDesignerResult(parsed);
     } catch(e) {
       console.error("Garden designer error:", e);
-      setDesignerResult({ error: true });
+      setDesignerResult({ error: true, message: e.message });
     }
     setDesignerLoading(false);
   }
@@ -2199,8 +2199,8 @@ IUCN/NatureServe status and any population trend notes.`;
           )}
 
           {designerResult?.error && (
-            <div style={{padding:"20px",color:"#b03000",background:"#fdf0ee",borderRadius:3}}>
-              Error generating design. Please try again.
+            <div style={{padding:"20px",color:"#b03000",background:"#fdf0ee",borderRadius:3,fontSize:13}}>
+              Error: {designerResult.message || "Unknown error"}. Please try again.
             </div>
           )}
 
