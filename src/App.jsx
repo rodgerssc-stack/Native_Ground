@@ -1260,10 +1260,20 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
   // ── GARDEN DESIGNER ───────────────────────────────────────────────────────
 
   function handleDesignerImage(file) {
-    if (!file || !file.type.startsWith("image/")) return;
+    if (!file) return;
+    // Accept any image type including iPad HEIC converted to JPEG
+    if (!file.type.startsWith("image/") && file.type !== "") return;
     const reader = new FileReader();
     reader.onload = (e) => {
-      setDesignerImage({ base64: e.target.result.split(",")[1], mediaType: file.type, previewUrl: e.target.result });
+      if (e.target && e.target.result) {
+        const dataUrl = e.target.result;
+        const base64 = dataUrl.split(",")[1];
+        const mediaType = file.type || "image/jpeg";
+        setDesignerImage({ base64, mediaType, previewUrl: dataUrl });
+      }
+    };
+    reader.onerror = () => {
+      alert("Could not read image file. Please try a different photo.");
     };
     reader.readAsDataURL(file);
   }
@@ -2096,9 +2106,9 @@ IUCN/NatureServe status and any population trend notes.`;
               <div className="designer-photo-zone" onClick={()=>document.getElementById("designer-photo-input").click()}>
                 <div style={{fontSize:32,marginBottom:8}}>📷</div>
                 <div style={{fontSize:13,fontWeight:500,color:"var(--ink)",marginBottom:4}}>Upload a photo of your space (optional)</div>
-                <div style={{fontSize:11,color:"var(--stone)"}}>JPG, PNG or WEBP · The AI will design around your actual space</div>
-                <input id="designer-photo-input" type="file" accept="image/*" style={{display:"none"}}
-                  onChange={e=>handleDesignerImage(e.target.files[0])}/>
+                <div style={{fontSize:11,color:"var(--stone)"}}>JPG or PNG · The AI will design around your actual space</div>
+                <input id="designer-photo-input" type="file" accept="image/jpeg,image/png,image/jpg" style={{display:"none"}}
+                  onChange={e=>{ if(e.target.files && e.target.files[0]) handleDesignerImage(e.target.files[0]); }}/>
               </div>
             ) : (
               <div style={{marginBottom:12,position:"relative"}}>
