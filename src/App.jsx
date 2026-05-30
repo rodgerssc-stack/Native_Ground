@@ -1314,18 +1314,18 @@ Include 5-7 plants native to ${designerState}. Return ONLY the JSON.`;
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
       const text = data.content?.map(b => b.text || "").join("") || "";
+      if (!text) throw new Error("Empty response from AI");
       // Try multiple ways to extract JSON
       let parsed;
       try {
-        // First try direct parse after stripping markdown
         parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
       } catch(parseErr) {
-        // Try to find JSON object in the response
-        const match = text.match(/\{[\s\S]*\}/);
+        const match = text.match(/[\[{][\s\S]*[\]}]/);
         if (match) {
-          parsed = JSON.parse(match[0]);
+          try { parsed = JSON.parse(match[0]); }
+          catch(e2) { throw new Error("JSON parse failed: " + text.slice(0,200)); }
         } else {
-          throw new Error("Could not parse response as JSON");
+          throw new Error("No JSON found in: " + text.slice(0,200));
         }
       }
       setDesignerResult(parsed);
