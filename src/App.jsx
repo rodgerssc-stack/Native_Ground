@@ -131,7 +131,13 @@ const PROPERTY_SIZES = [
   "Under ¼ acre","¼ – 1 acre","1 – 5 acres","5 – 20 acres","20 – 100 acres","100+ acres"
 ];
 
-const TABS = ["Native","Invasive","Wildlife","AI Identifier","About"];
+const TABS = ["Native","Invasive","Wildlife","Plant Finder","Garden Designer","AI Identifier","About"];
+
+const BLOOM_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const BLOOM_COLORS = {
+  wildflower:"#c0692a", tree:"#2d6b3a", fern:"#3a7a55",
+  grass:"#7a6830", mushroom:"#8a5a28", default:"#4a6741"
+};
 
 const AI_ID_MODES = [
   { id:"photo", label:"Photo ID", icon:"📷", desc:"Upload or take a photo" },
@@ -454,6 +460,94 @@ body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);m
 .ai-result-heading{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--moss);margin:14px 0 5px}
 .ai-result-heading:first-child{margin-top:0}
 
+/* ── PLANT FINDER ── */
+.finder-wrap{padding:28px 40px;max-width:860px}
+.finder-hero{background:linear-gradient(135deg,#1c2e18,#2d4a20);border-radius:4px;padding:24px 28px;margin-bottom:24px;color:#e4dcc4}
+.finder-hero-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#f0e8d0;margin-bottom:4px}
+.finder-hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#7aaa5a}
+.finder-search-row{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.finder-input{flex:1;min-width:200px;background:white;border:1.5px solid #ccc5b0;border-radius:3px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .2s}
+.finder-input:focus{border-color:#5a8c3a}
+.finder-btn{background:var(--moss);color:#c8ddb8;border:none;border-radius:3px;padding:11px 22px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap}
+.finder-btn:hover:not(:disabled){background:#3d7a33}
+.finder-btn:disabled{opacity:.45;cursor:not-allowed}
+.finder-examples{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.finder-ex{font-size:11px;padding:5px 11px;background:white;border:1px solid #ccc5b0;border-radius:2px;cursor:pointer;color:#5a5040;transition:border-color .15s}
+.finder-ex:hover{border-color:#5a8c3a}
+.finder-results{display:flex;flex-direction:column;gap:16px}
+.finder-card{background:white;border:1px solid var(--mist);border-radius:4px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.finder-card-top{display:flex;gap:0}
+.finder-card-photo{width:140px;min-height:140px;flex-shrink:0;background:var(--cream);overflow:hidden}
+.finder-card-photo img{width:100%;height:100%;object-fit:cover}
+.finder-card-photo-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;min-height:140px}
+.finder-card-body{flex:1;padding:16px 18px}
+.finder-card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.finder-card-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--stone);margin-bottom:8px}
+.finder-card-desc{font-size:13px;color:#4a3e2c;line-height:1.65;margin-bottom:10px}
+.finder-card-tags{display:flex;flex-wrap:wrap;gap:6px}
+.finder-tag{font-size:10px;padding:3px 8px;border-radius:2px;background:var(--cream);color:#5a5040}
+.finder-tag-green{background:#e8f5e0;color:#2d6b1a}
+.finder-replace-banner{background:#fdf0ee;border-top:1px solid #f0c8c0;padding:10px 18px;font-size:12px;color:#8a3020;display:flex;align-items:center;gap:8px}
+.finder-why{background:#f0f8ec;border-top:1px solid #c8ddb8;padding:10px 18px;font-size:12px;color:#2a4a1e;display:flex;align-items:center;gap:8px}
+
+/* ── BLOOM CALENDAR ── */
+.bloom-calendar{margin-top:12px}
+.bloom-cal-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:8px;font-weight:600}
+.bloom-months{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.bloom-month{text-align:center}
+.bloom-month-bar{height:24px;border-radius:2px;background:var(--mist);transition:background .2s;position:relative}
+.bloom-month-bar.active{background:var(--fern)}
+.bloom-month-bar.peak{background:var(--moss)}
+.bloom-month-label{font-size:8px;color:var(--stone);margin-top:3px;letter-spacing:.5px}
+.bloom-legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+.bloom-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--stone)}
+.bloom-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* ── GARDEN DESIGNER ── */
+.designer-wrap{padding:28px 40px;max-width:860px}
+.designer-hero{background:linear-gradient(135deg,#1a2e18,#2a4a1e);border-radius:4px;padding:24px 28px;margin-bottom:24px;color:#e4dcc4}
+.designer-hero-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#f0e8d0;margin-bottom:4px}
+.designer-hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#7aaa5a}
+.designer-form{background:var(--cream);border:1px solid var(--mist);border-radius:4px;padding:20px 24px;margin-bottom:20px}
+.designer-form-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);margin-bottom:14px;font-weight:600}
+.designer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.designer-field{display:flex;flex-direction:column;gap:4px}
+.designer-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone);font-weight:600}
+.designer-input{background:white;border:1.5px solid #ccc5b0;border-radius:3px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
+.designer-input:focus{border-color:#5a8c3a}
+.designer-textarea{background:white;border:1.5px solid #ccc5b0;border-radius:3px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;resize:vertical;min-height:70px;line-height:1.6;transition:border-color .2s}
+.designer-textarea:focus{border-color:#5a8c3a}
+.designer-photo-zone{border:2px dashed #ccc5b0;border-radius:4px;padding:20px;text-align:center;cursor:pointer;background:white;transition:all .2s;margin-bottom:12px}
+.designer-photo-zone:hover{border-color:#5a8c3a;background:#f5fbf3}
+.designer-photo-preview{width:100%;max-height:220px;object-fit:cover;border-radius:3px;display:block;margin-bottom:8px}
+.designer-btn{background:var(--moss);color:#c8ddb8;border:none;border-radius:3px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.designer-btn:hover:not(:disabled){background:#3d7a33}
+.designer-btn:disabled{opacity:.45;cursor:not-allowed}
+.designer-result{background:white;border:1px solid var(--mist);border-radius:4px;padding:24px}
+.designer-result-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.designer-result-sub{font-size:12px;color:var(--stone);margin-bottom:20px}
+.designer-section{margin-bottom:20px}
+.designer-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--moss);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--mist)}
+.designer-plant-list{display:flex;flex-direction:column;gap:8px}
+.designer-plant-row{background:var(--cream);border-radius:3px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px}
+.designer-plant-num{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--moss);flex-shrink:0;min-width:24px}
+.designer-plant-info{flex:1}
+.designer-plant-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.designer-plant-detail{font-size:12px;color:var(--stone);line-height:1.5}
+.designer-annual-calendar{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:12px}
+.designer-cal-month{text-align:center}
+.designer-cal-bar{border-radius:2px;background:var(--mist);position:relative;overflow:hidden}
+.designer-cal-label{font-size:8px;color:var(--stone);margin-top:3px;text-align:center}
+
+@media(max-width:640px){
+  .finder-wrap,.designer-wrap{padding-left:18px;padding-right:18px}
+  .finder-card-top{flex-direction:column}
+  .finder-card-photo{width:100%;min-height:180px}
+  .designer-grid{grid-template-columns:1fr}
+  .bloom-months{gap:1px}
+  .bloom-month-label{font-size:7px}
+}
+
 /* ABOUT */
 .about-wrap{padding:28px 40px;max-width:680px}
 .about-wrap h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:10px}
@@ -750,6 +844,23 @@ function FieldGuide() {
   const [modalHabProp, setModalHabProp] = useState("backyard");
   const [modalHabResult, setModalHabResult] = useState("");
   const [modalHabLoading, setModalHabLoading] = useState(false);
+
+  // Plant Finder state
+  const [finderQuery, setFinderQuery] = useState("");
+  const [finderState, setFinderState] = useState("Pennsylvania");
+  const [finderResults, setFinderResults] = useState([]);
+  const [finderLoading, setFinderLoading] = useState(false);
+  const [finderSearched, setFinderSearched] = useState(false);
+  const [finderPhotos, setFinderPhotos] = useState({});
+
+  // Garden Designer state
+  const [designerImage, setDesignerImage] = useState(null);
+  const [designerState, setDesignerState] = useState("Pennsylvania");
+  const [designerSize, setDesignerSize] = useState("Small backyard (under 500 sq ft)");
+  const [designerSun, setDesignerSun] = useState("Mixed sun and shade");
+  const [designerGoals, setDesignerGoals] = useState("");
+  const [designerLoading, setDesignerLoading] = useState(false);
+  const [designerResult, setDesignerResult] = useState(null);
 
   // Habitat Advisor
   const [habState, setHabState] = useState("Pennsylvania");
@@ -1073,7 +1184,149 @@ Return this exact JSON with all fields filled in:
     setGbifLoading(false);
   }
 
-  async function fetchModalHabitat(sp, propType) {
+  // ── PLANT FINDER ──────────────────────────────────────────────────────────
+
+  async function fetchPlantFinder() {
+    if (!finderQuery.trim() || finderLoading) return;
+    setFinderLoading(true); setFinderResults([]); setFinderSearched(false); setFinderPhotos({});
+    try {
+      const raw = await callClaude(
+        "You are an expert horticulturist and native plant specialist. Return ONLY valid JSON, no markdown.",
+        `Someone wants to replace "${finderQuery.trim()}" with native plants in ${finderState}.
+
+Return a JSON object:
+{
+  "searched_plant": {
+    "name": "common name of the searched plant",
+    "latin": "Latin name",
+    "is_invasive": true or false,
+    "why_replace": "1-2 sentences on why this plant should be replaced with natives (invasiveness, ecological harm, or just that natives are better)"
+  },
+  "alternatives": [
+    {
+      "name": "Native alternative common name",
+      "latin": "Latin name",
+      "category": "wildflower or tree or fern or grass or mushroom",
+      "why_good_replacement": "1-2 sentences on why this is a great native alternative",
+      "description": "Physical description and key features",
+      "sun": "Full sun / Part shade / Full shade",
+      "water": "Low / Medium / High",
+      "size": "height and spread",
+      "wildlife_value": "what wildlife it supports",
+      "bloom_months": [1,2,3] (array of month numbers 1-12 when it blooms or has peak interest),
+      "peak_months": [4,5] (array of peak bloom month numbers)
+    }
+  ]
+}
+Provide 4-5 native alternatives. All alternatives must be truly native to ${finderState}.`,
+        2500
+      );
+      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      setFinderResults(parsed);
+      setFinderSearched(true);
+      // Fetch photos for alternatives
+      if (parsed.alternatives) {
+        const photos = {};
+        await Promise.all(parsed.alternatives.map(async (alt) => {
+          try {
+            const res = await fetch(
+              `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(alt.latin)}&rank=species&per_page=1`,
+              { headers: { "Accept": "application/json" } }
+            );
+            if (!res.ok) return;
+            const data = await res.json();
+            const taxon = data.results?.[0];
+            if (taxon?.default_photo?.medium_url) {
+              photos[alt.latin] = taxon.default_photo.medium_url;
+            }
+          } catch(e) {}
+        }));
+        setFinderPhotos(photos);
+      }
+    } catch(e) { console.error("Plant finder error:", e); }
+    setFinderLoading(false);
+  }
+
+  // ── GARDEN DESIGNER ───────────────────────────────────────────────────────
+
+  function handleDesignerImage(file) {
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setDesignerImage({ base64: e.target.result.split(",")[1], mediaType: file.type, previewUrl: e.target.result });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function fetchGardenDesign() {
+    if (designerLoading) return;
+    setDesignerLoading(true); setDesignerResult(null);
+    const goalsClause = designerGoals.trim() ? ` Goals: ${designerGoals.trim()}.` : "";
+    try {
+      let messages;
+      const prompt = `Design a native plant garden for ${designerState}.
+Space: ${designerSize}. Light: ${designerSun}.${goalsClause}
+
+Return a JSON object:
+{
+  "garden_name": "creative name for this garden design",
+  "design_description": "2-3 sentences describing the overall design concept",
+  "plants": [
+    {
+      "name": "common name",
+      "latin": "Latin name",
+      "category": "wildflower or tree or fern or grass",
+      "quantity": "how many plants",
+      "placement": "where in the garden to place it",
+      "bloom_months": [4,5,6],
+      "peak_months": [5],
+      "color": "flower or foliage color"
+    }
+  ],
+  "seasonal_description": {
+    "spring": "what the garden looks like in spring",
+    "summer": "what it looks like in summer",
+    "fall": "fall appearance",
+    "winter": "winter interest"
+  },
+  "maintenance": "brief maintenance notes",
+  "wildlife_expected": "what wildlife this garden will attract"
+}
+Include 6-10 plants all native to ${designerState}. Make it beautiful and ecologically valuable.`;
+
+      if (designerImage) {
+        messages = [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: designerImage.mediaType, data: designerImage.base64 } },
+            { type: "text", text: `I have uploaded a photo of my garden space. ${prompt}` }
+          ]
+        }];
+      } else {
+        messages = [{ role: "user", content: prompt }];
+      }
+
+      const res = await fetch("/api/claude", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-5",
+          max_tokens: 3000,
+          system: "You are an expert native plant garden designer. Return ONLY valid JSON, no markdown.",
+          messages
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      const text = data.content?.map(b => b.text || "").join("") || "";
+      const parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
+      setDesignerResult(parsed);
+    } catch(e) {
+      console.error("Garden designer error:", e);
+      setDesignerResult({ error: true });
+    }
+    setDesignerLoading(false);
+  }
     setModalHabLoading(true); setModalHabResult("");
     const prop = PROPERTY_TYPES.find(p=>p.id===propType);
     try {
@@ -1160,37 +1413,15 @@ For each section, give specific, actionable recommendations appropriate for ${ha
 
   function handleImageFile(file) {
     if (!file || !file.type.startsWith("image/")) return;
-    // Compress image before encoding to reduce payload size
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      const canvas = document.createElement("canvas");
-      const MAX = 800;
-      let w = img.width, h = img.height;
-      if (w > MAX || h > MAX) {
-        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-        else { w = Math.round(w * MAX / h); h = MAX; }
-      }
-      canvas.width = w;
-      canvas.height = h;
-      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
       const base64 = dataUrl.split(",")[1];
-      setAiImage({ base64, mediaType: "image/jpeg", previewUrl: dataUrl });
+      const mediaType = file.type;
+      setAiImage({ base64, mediaType, previewUrl: dataUrl });
       setAiResult("");
     };
-    img.onerror = () => {
-      // Fallback to direct encoding if compression fails
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        setAiImage({ base64: dataUrl.split(",")[1], mediaType: file.type, previewUrl: dataUrl });
-        setAiResult("");
-      };
-      reader.readAsDataURL(file);
-    };
-    img.src = objectUrl;
+    reader.readAsDataURL(file);
   }
 
   function clearImage() {
@@ -1200,7 +1431,11 @@ For each section, give specific, actionable recommendations appropriate for ${ha
   async function runAI() {
     const hasImage = aiMode === "photo" && aiImage && aiImage.base64 && aiImage.base64.length > 0;
     const hasText  = aiMode === "text"  && aiQuery.trim();
-    if ((!hasImage && !hasText) || aiLoading) return;
+    console.log("runAI called - hasImage:", hasImage, "hasText:", hasText, "aiMode:", aiMode, "aiImage:", !!aiImage);
+    if ((!hasImage && !hasText) || aiLoading) {
+      console.log("Early return - conditions not met");
+      return;
+    }
     if (aiMode === "photo" && !hasImage) {
       setAiResult("Please upload a photo before clicking Identify.");
       return;
@@ -1208,6 +1443,7 @@ For each section, give specific, actionable recommendations appropriate for ${ha
     if (!isPro && aiUsageCount >= FREE_AI_LIMIT) { openUpgrade(); return; }
     setAiLoading(true); setAiResult("");
     setAiUsageCount(c => c + 1);
+    console.log("Sending to API, image size:", aiImage?.base64?.length);
 
     const sc = aiState !== "All States" ? ` in ${aiState}` : " in the USA";
     const systemPrompt = "You are an expert field naturalist and taxonomist with encyclopedic knowledge of ALL native US species — plants, mammals, birds, fish, reptiles, amphibians, insects, and invertebrates. Provide precise, practical identification help.";
@@ -1372,6 +1608,46 @@ IUCN/NatureServe status and any population trend notes.`;
   }
 
   const remainingFree = Math.max(0, FREE_AI_LIMIT - aiUsageCount);
+
+  // ── BLOOM CALENDAR COMPONENT ─────────────────────────────────────────────
+  function BloomCalendar({ bloomMonths = [], peakMonths = [], category = "default" }) {
+    const color = BLOOM_COLORS[category] || BLOOM_COLORS.default;
+    return (
+      <div className="bloom-calendar">
+        <div className="bloom-cal-title">Bloom / Peak Interest Calendar</div>
+        <div className="bloom-months">
+          {BLOOM_MONTHS.map((month, i) => {
+            const monthNum = i + 1;
+            const isActive = bloomMonths.includes(monthNum);
+            const isPeak = peakMonths.includes(monthNum);
+            return (
+              <div key={month} className="bloom-month">
+                <div className="bloom-month-bar"
+                  style={{
+                    background: isPeak ? color : isActive ? color+"99" : "var(--mist)",
+                    border: isPeak ? `2px solid ${color}` : "none"
+                  }}
+                  title={`${month}: ${isPeak ? "Peak bloom" : isActive ? "Blooming" : "Not blooming"}`}
+                />
+                <div className="bloom-month-label">{month}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="bloom-legend">
+          <div className="bloom-legend-item">
+            <div className="bloom-legend-dot" style={{background:color}}/> Peak
+          </div>
+          <div className="bloom-legend-item">
+            <div className="bloom-legend-dot" style={{background:color+"99"}}/> Blooming
+          </div>
+          <div className="bloom-legend-item">
+            <div className="bloom-legend-dot" style={{background:"var(--mist)"}}/> Dormant
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ── RENDER ────────────────────────────────────────────────────────────────
 
@@ -1699,6 +1975,258 @@ IUCN/NatureServe status and any population trend notes.`;
         )}
       </>}
 
+      {/* ══ PLANT FINDER ════════════════════════════════════════════════════ */}
+      {tab==="Plant Finder" && (
+        <div className="finder-wrap">
+          <div className="finder-hero">
+            <div className="finder-hero-title">🔄 Native Plant Replacement Finder</div>
+            <div className="finder-hero-sub">Find native alternatives for any commercial, invasive, or non-native plant</div>
+          </div>
+
+          <div className="finder-search-row">
+            <input className="finder-input"
+              placeholder="Enter any plant name — e.g. Burning Bush, Bradford Pear, English Ivy, Barberry…"
+              value={finderQuery}
+              onChange={e=>setFinderQuery(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&fetchPlantFinder()}/>
+            <select className="fsel" value={finderState} onChange={e=>setFinderState(e.target.value)}>
+              {STATES.map(s=><option key={s}>{s}</option>)}
+            </select>
+            <button className="finder-btn" onClick={fetchPlantFinder} disabled={finderLoading||!finderQuery.trim()}>
+              {finderLoading?<><Spinner/>Searching…</>:"Find Natives"}
+            </button>
+          </div>
+
+          <div className="finder-examples">
+            {["Burning Bush","Bradford Pear","English Ivy","Japanese Barberry","Butterfly Bush","Norway Maple","Creeping Jenny","Nandina"].map(ex=>(
+              <div key={ex} className="finder-ex" onClick={()=>{ setFinderQuery(ex); setTimeout(fetchPlantFinder, 50); }}>{ex}</div>
+            ))}
+          </div>
+
+          {finderLoading && <div style={{textAlign:"center",padding:"40px",color:"var(--stone)"}}><Spinner/>Finding native alternatives…</div>}
+
+          {finderSearched && finderResults && (
+            <div className="finder-results">
+              {/* What you searched */}
+              {finderResults.searched_plant && (
+                <div style={{background:finderResults.searched_plant.is_invasive?"#fdf0ee":"var(--cream)",border:`1px solid ${finderResults.searched_plant.is_invasive?"#f0c8c0":"var(--mist)"}`,borderRadius:4,padding:"14px 18px",marginBottom:8}}>
+                  <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:finderResults.searched_plant.is_invasive?"#b03020":"var(--stone)",marginBottom:4,fontWeight:600}}>
+                    {finderResults.searched_plant.is_invasive ? "⚠️ Invasive Species" : "Non-Native Plant"}
+                  </div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"var(--ink)",marginBottom:2}}>{finderResults.searched_plant.name}</div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:13,color:"var(--stone)",marginBottom:8}}>{finderResults.searched_plant.latin}</div>
+                  <div style={{fontSize:13,color:"#4a3e2c",lineHeight:1.65}}>{finderResults.searched_plant.why_replace}</div>
+                </div>
+              )}
+
+              {/* Native alternatives */}
+              <div style={{fontSize:10,letterSpacing:"2px",textTransform:"uppercase",color:"var(--moss)",fontWeight:600,marginBottom:8,marginTop:4}}>
+                ✓ {finderResults.alternatives?.length || 0} Native Alternatives for {finderState}
+              </div>
+
+              {finderResults.alternatives?.map((alt, i) => (
+                <div key={i} className="finder-card">
+                  <div className="finder-card-top">
+                    <div className="finder-card-photo">
+                      {finderPhotos[alt.latin]
+                        ? <img src={finderPhotos[alt.latin]} alt={alt.name} onError={e=>e.target.style.display="none"}/>
+                        : <div className="finder-card-photo-ph">🌿</div>
+                      }
+                    </div>
+                    <div className="finder-card-body">
+                      <div className="finder-card-name">{alt.name}</div>
+                      <div className="finder-card-latin">{alt.latin}</div>
+                      <div className="finder-card-desc">{alt.why_good_replacement}</div>
+                      <div className="finder-card-desc" style={{color:"var(--stone)",marginBottom:10}}>{alt.description}</div>
+                      <div className="finder-card-tags">
+                        {alt.sun && <span className="finder-tag">☀ {alt.sun}</span>}
+                        {alt.water && <span className="finder-tag">💧 {alt.water} water</span>}
+                        {alt.size && <span className="finder-tag">📏 {alt.size}</span>}
+                        {alt.wildlife_value && <span className="finder-tag finder-tag-green">🦋 {alt.wildlife_value.slice(0,40)}</span>}
+                      </div>
+                    </div>
+                  </div>
+                  {(alt.bloom_months?.length > 0) && (
+                    <div style={{padding:"12px 18px",borderTop:"1px solid var(--mist)"}}>
+                      <BloomCalendar bloomMonths={alt.bloom_months} peakMonths={alt.peak_months||[]} category={alt.category}/>
+                    </div>
+                  )}
+                  <div className="finder-why">
+                    <span>✓</span>
+                    <span>Native to {finderState} · Ecologically beneficial · Supports local wildlife</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!finderLoading && !finderSearched && (
+            <div style={{textAlign:"center",padding:"60px 20px",color:"var(--stone)"}}>
+              <div style={{fontSize:44,marginBottom:12}}>🔄</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,color:"var(--ink)",marginBottom:8}}>Replace Any Plant with a Native</div>
+              <div style={{fontSize:13,maxWidth:400,margin:"0 auto",lineHeight:1.7}}>Type the name of any commercial, invasive, or non-native plant above and we'll find the best native alternatives for your state.</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══ GARDEN DESIGNER ═════════════════════════════════════════════════ */}
+      {tab==="Garden Designer" && (
+        <div className="designer-wrap">
+          <div className="designer-hero">
+            <div className="designer-hero-title">🌻 AI Native Garden Designer</div>
+            <div className="designer-hero-sub">Upload a photo of your space and get a complete native planting plan with a bloom calendar</div>
+          </div>
+
+          <div className="designer-form">
+            <div className="designer-form-title">Describe Your Garden Space</div>
+
+            {/* Optional photo upload */}
+            {!designerImage ? (
+              <div className="designer-photo-zone" onClick={()=>document.getElementById("designer-photo-input").click()}>
+                <div style={{fontSize:32,marginBottom:8}}>📷</div>
+                <div style={{fontSize:13,fontWeight:500,color:"var(--ink)",marginBottom:4}}>Upload a photo of your space (optional)</div>
+                <div style={{fontSize:11,color:"var(--stone)"}}>JPG, PNG or WEBP · The AI will design around your actual space</div>
+                <input id="designer-photo-input" type="file" accept="image/*" style={{display:"none"}}
+                  onChange={e=>handleDesignerImage(e.target.files[0])}/>
+              </div>
+            ) : (
+              <div style={{marginBottom:12,position:"relative"}}>
+                <img className="designer-photo-preview" src={designerImage.previewUrl} alt="Garden space"/>
+                <button onClick={()=>setDesignerImage(null)}
+                  style={{position:"absolute",top:8,right:8,background:"rgba(0,0,0,.5)",color:"white",border:"none",borderRadius:"50%",width:28,height:28,cursor:"pointer",fontSize:14}}>✕</button>
+              </div>
+            )}
+
+            <div className="designer-grid">
+              <div className="designer-field">
+                <div className="designer-label">State</div>
+                <select className="designer-input" value={designerState} onChange={e=>setDesignerState(e.target.value)}
+                  style={{appearance:"none",backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E\")",backgroundRepeat:"no-repeat",backgroundPosition:"right 8px center",paddingRight:28}}>
+                  {STATES.map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="designer-field">
+                <div className="designer-label">Garden Size</div>
+                <select className="designer-input" value={designerSize} onChange={e=>setDesignerSize(e.target.value)}
+                  style={{appearance:"none",backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E\")",backgroundRepeat:"no-repeat",backgroundPosition:"right 8px center",paddingRight:28}}>
+                  {["Small backyard (under 500 sq ft)","Medium yard (500-2000 sq ft)","Large yard (2000+ sq ft)","Front yard","Side yard","Rain garden / wet area","Meadow or field","Woodland edge"].map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="designer-field">
+                <div className="designer-label">Sun Exposure</div>
+                <select className="designer-input" value={designerSun} onChange={e=>setDesignerSun(e.target.value)}
+                  style={{appearance:"none",backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E\")",backgroundRepeat:"no-repeat",backgroundPosition:"right 8px center",paddingRight:28}}>
+                  {["Full sun (6+ hours)","Part sun (4-6 hours)","Part shade (2-4 hours)","Full shade (under 2 hours)","Mixed sun and shade"].map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="designer-field">
+                <div className="designer-label">Goals (optional)</div>
+                <input className="designer-input" placeholder="e.g. attract butterflies, year-round color, low maintenance…"
+                  value={designerGoals} onChange={e=>setDesignerGoals(e.target.value)}/>
+              </div>
+            </div>
+
+            <button className="designer-btn" onClick={fetchGardenDesign} disabled={designerLoading}>
+              {designerLoading ? <><Spinner/>Designing your garden…</> : "Generate Native Garden Plan"}
+            </button>
+          </div>
+
+          {designerResult && !designerResult.error && (
+            <div className="designer-result">
+              <div className="designer-result-title">{designerResult.garden_name}</div>
+              <div className="designer-result-sub">{designerState} · {designerSize} · {designerSun}</div>
+              <p style={{fontSize:14,lineHeight:1.8,color:"#3e3428",marginBottom:20}}>{designerResult.design_description}</p>
+
+              {/* Plant list */}
+              {designerResult.plants?.length > 0 && (
+                <div className="designer-section">
+                  <div className="designer-section-title">🌱 Recommended Plants ({designerResult.plants.length})</div>
+                  <div className="designer-plant-list">
+                    {designerResult.plants.map((plant, i) => (
+                      <div key={i} className="designer-plant-row">
+                        <div className="designer-plant-num">{i+1}</div>
+                        <div className="designer-plant-info">
+                          <div className="designer-plant-name">{plant.name} <span style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontWeight:400,color:"var(--stone)",fontSize:13}}>({plant.latin})</span></div>
+                          <div className="designer-plant-detail">
+                            {plant.quantity && <span>🌿 {plant.quantity} · </span>}
+                            {plant.placement && <span>📍 {plant.placement} · </span>}
+                            {plant.color && <span>🎨 {plant.color}</span>}
+                          </div>
+                          {(plant.bloom_months?.length > 0) && (
+                            <div style={{marginTop:8}}>
+                              <BloomCalendar bloomMonths={plant.bloom_months} peakMonths={plant.peak_months||[]} category={plant.category}/>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Seasonal descriptions */}
+              {designerResult.seasonal_description && (
+                <div className="designer-section">
+                  <div className="designer-section-title">📅 Your Garden Through the Seasons</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    {[["🌸 Spring",designerResult.seasonal_description.spring],
+                      ["☀️ Summer",designerResult.seasonal_description.summer],
+                      ["🍂 Fall",designerResult.seasonal_description.fall],
+                      ["❄️ Winter",designerResult.seasonal_description.winter]
+                    ].map(([season, desc])=>desc?(
+                      <div key={season} style={{background:"var(--cream)",borderRadius:3,padding:"12px 14px"}}>
+                        <div style={{fontSize:12,fontWeight:600,color:"var(--moss)",marginBottom:5}}>{season}</div>
+                        <div style={{fontSize:13,color:"#3e3428",lineHeight:1.6}}>{desc}</div>
+                      </div>
+                    ):null)}
+                  </div>
+                </div>
+              )}
+
+              {/* Wildlife and maintenance */}
+              {(designerResult.wildlife_expected || designerResult.maintenance) && (
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:0}}>
+                  {designerResult.wildlife_expected && (
+                    <div style={{background:"#f0f8ec",border:"1px solid #c8ddb8",borderRadius:3,padding:"12px 14px"}}>
+                      <div style={{fontSize:9,letterSpacing:"2px",textTransform:"uppercase",color:"var(--moss)",marginBottom:5,fontWeight:600}}>Wildlife Expected</div>
+                      <div style={{fontSize:13,color:"#2a3820",lineHeight:1.6}}>{designerResult.wildlife_expected}</div>
+                    </div>
+                  )}
+                  {designerResult.maintenance && (
+                    <div style={{background:"var(--cream)",border:"1px solid var(--mist)",borderRadius:3,padding:"12px 14px"}}>
+                      <div style={{fontSize:9,letterSpacing:"2px",textTransform:"uppercase",color:"var(--stone)",marginBottom:5,fontWeight:600}}>Maintenance</div>
+                      <div style={{fontSize:13,color:"#3e3428",lineHeight:1.6}}>{designerResult.maintenance}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div style={{marginTop:16,textAlign:"center"}}>
+                <button className="designer-btn" onClick={fetchGardenDesign} disabled={designerLoading}
+                  style={{background:"transparent",border:"1px solid #b8dcd4",color:"var(--advisor)"}}>
+                  {designerLoading?<><Spinner/>Redesigning…</>:"↻ Generate New Design"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {designerResult?.error && (
+            <div style={{padding:"20px",color:"#b03000",background:"#fdf0ee",borderRadius:3}}>
+              Error generating design. Please try again.
+            </div>
+          )}
+
+          {!designerResult && !designerLoading && (
+            <div style={{textAlign:"center",padding:"40px 20px",color:"var(--stone)"}}>
+              <div style={{fontSize:44,marginBottom:12}}>🌻</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,color:"var(--ink)",marginBottom:8}}>Design Your Native Garden</div>
+              <div style={{fontSize:13,maxWidth:420,margin:"0 auto",lineHeight:1.7}}>Fill in your garden details above — optionally upload a photo of your space — and get a complete native planting plan with a bloom calendar showing what's flowering every month of the year.</div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ══ AI IDENTIFIER ══════════════════════════════════════════════════ */}
       {tab==="AI Identifier" && (
         <div className="ai-wrap">
@@ -1838,6 +2366,8 @@ IUCN/NatureServe status and any population trend notes.`;
           <p><strong>Native:</strong> Browse native plants by state, category, habitat and season. Click any card for a full field guide entry with 7 tabbed sections of detailed information.</p>
           <p><strong>Invasive:</strong> Search for invasive species threatening your area. Each card shows identification, origin, spread, ecological impact, and control methods.</p>
           <p><strong>Wildlife:</strong> Explore native mammals, birds, fish, reptiles, amphibians, and insects by state and habitat.</p>
+          <p><strong>Plant Finder:</strong> Type any commercial or invasive plant name and instantly get 4-5 native alternatives for your state, with photos, growing conditions, wildlife value, and a bloom calendar.</p>
+          <p><strong>Garden Designer:</strong> Describe your garden space — or upload a photo — and get a complete native planting plan with seasonal descriptions and a month-by-month bloom calendar.</p>
           <p><strong>AI Identifier:</strong> Upload a photo or describe a field observation to get expert species identification.</p>
           <h3>Free vs Pro</h3>
           <p>The free version is supported by generic advertising and includes {FREE_AI_LIMIT} AI identifications per session. <strong>Pro</strong> ({"$"}{PRO_PRICE_MONTHLY}/month or {"$"}{PRO_PRICE_YEARLY}/year) gives you unlimited identifications, unlimited habitat plans, a completely ad-free experience, and priority AI speed.</p>
