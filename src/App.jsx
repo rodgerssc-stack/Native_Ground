@@ -1484,16 +1484,48 @@ For each section, give specific, actionable recommendations appropriate for ${ha
   // ── AI IDENTIFIER ──────────────────────────────────────────────────────────
 
   function handleImageFile(file) {
-    if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target.result;
+    if (!file) return;
+    if (!file.type.startsWith("image/") && file.type !== "") return;
+
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement("canvas");
+      const MAX = 1024;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      let dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      if (dataUrl.length > 3000000) {
+        dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+      }
       const base64 = dataUrl.split(",")[1];
-      const mediaType = file.type;
-      setAiImage({ base64, mediaType, previewUrl: dataUrl });
+      setAiImage({ base64, mediaType: "image/jpeg", previewUrl: dataUrl });
       setAiResult("");
+      console.log("Image ready, size:", base64.length);
     };
-    reader.readAsDataURL(file);
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          const dataUrl = e.target.result;
+          setAiImage({ base64: dataUrl.split(",")[1], mediaType: file.type || "image/jpeg", previewUrl: dataUrl });
+          setAiResult("");
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    img.src = objectUrl;
   }
 
   function clearImage() {
