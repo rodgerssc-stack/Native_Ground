@@ -1070,17 +1070,15 @@ Return this exact JSON with all fields filled in:
     const newPhotos = {};
     await Promise.all(speciesList.map(async (sp) => {
       try {
-        const res = await fetch(
-          `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`,
-          { headers: { "Accept": "application/json" } }
-        );
+        const res = await fetch("/api/photos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ latin: sp.latin, mode: "card" })
+        });
         if (!res.ok) return;
         const data = await res.json();
-        const taxon = data.results?.[0];
-        if (taxon?.default_photo?.medium_url) {
-          newPhotos[sp.latin] = taxon.default_photo.medium_url;
-        } else if (taxon?.default_photo?.square_url) {
-          newPhotos[sp.latin] = taxon.default_photo.square_url.replace("square","medium");
+        if (data.photos?.[0]?.url) {
+          newPhotos[sp.latin] = data.photos[0].url;
         }
       } catch(e) {
         console.error("Card photo error for", sp.latin, e);
@@ -1092,57 +1090,18 @@ Return this exact JSON with all fields filled in:
   async function fetchInatPhotos(sp) {
     setInatLoading(true); setInatPhotos([]); setActivePhoto(0);
     try {
-      const taxonRes = await fetch(
-        `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(sp.latin)}&rank=species&per_page=1`,
-        { headers: { "Accept": "application/json" } }
-      );
-      if (!taxonRes.ok) { setInatLoading(false); return; }
-      const taxonData = await taxonRes.json();
-      const taxon = taxonData.results?.[0];
-      if (!taxon) { setInatLoading(false); return; }
-
-      const photos = [];
-
-      // Get taxon default photo first
-      if (taxon.default_photo?.medium_url) {
-        photos.push({
-          url: taxon.default_photo.medium_url,
-          attribution: taxon.default_photo.attribution || "",
-          observer: "iNaturalist",
-          place: "", date: "",
-          obsUrl: `https://www.inaturalist.org/taxa/${taxon.id}`,
-        });
+      const res = await fetch("/api/photos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latin: sp.latin, mode: "modal" })
+      });
+      if (!res.ok) { setInatLoading(false); return; }
+      const data = await res.json();
+      if (data.photos?.length > 0) {
+        setInatPhotos(data.photos);
       }
-
-      // Get additional research-grade observation photos
-      const obsRes = await fetch(
-        `https://api.inaturalist.org/v1/observations?taxon_id=${taxon.id}&quality_grade=research&photos=true&per_page=6&order_by=votes`,
-        { headers: { "Accept": "application/json" } }
-      );
-      if (obsRes.ok) {
-        const obsData = await obsRes.json();
-        for (const obs of obsData.results || []) {
-          for (const photo of obs.photos || []) {
-            const url = photo.url?.replace("square", "medium");
-            if (url && !photos.find(p => p.url === url)) {
-              photos.push({
-                url,
-                attribution: photo.attribution || "",
-                observer: obs.user?.login || "iNaturalist",
-                place: obs.place_guess || "",
-                date: obs.observed_on || "",
-                obsUrl: `https://www.inaturalist.org/observations/${obs.id}`,
-              });
-            }
-          }
-          if (photos.length >= 6) break;
-        }
-      }
-
-      setInatPhotos(photos);
     } catch(e) {
       console.error("iNat photo error:", e);
-      setInatPhotos([]);
     }
     setInatLoading(false);
   }
@@ -1237,20 +1196,20 @@ Provide 4-5 native alternatives. All alternatives must be truly native to ${find
       catch(_) { const m = raw.match(/[\[\{][\s\S]*[\]\}]/); if(m) parsed = JSON.parse(m[0]); else throw new Error("Invalid JSON response"); }
       setFinderResults(parsed);
       setFinderSearched(true);
-      // Fetch photos for alternatives
+      // Fetch photos for alternatives using proxy
       if (parsed.alternatives) {
         const photos = {};
         await Promise.all(parsed.alternatives.map(async (alt) => {
           try {
-            const res = await fetch(
-              `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(alt.latin)}&rank=species&per_page=1`,
-              { headers: { "Accept": "application/json" } }
-            );
+            const res = await fetch("/api/photos", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ latin: alt.latin, mode: "card" })
+            });
             if (!res.ok) return;
             const data = await res.json();
-            const taxon = data.results?.[0];
-            if (taxon?.default_photo?.medium_url) {
-              photos[alt.latin] = taxon.default_photo.medium_url;
+            if (data.photos?.[0]?.url) {
+              photos[alt.latin] = data.photos[0].url;
             }
           } catch(e) {}
         }));

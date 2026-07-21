@@ -25,16 +25,18 @@ export default async function handler(req, res) {
       })
     }
 
-    // Start a new prediction using deployment URL (always latest version)
-    const startRes = await fetch('https://api.replicate.com/v1/models/bytedance/sdxl-lightning-4step/predictions', {
+    // Start new prediction - use /predictions with explicit version hash
+    // This is the latest working version of sdxl-lightning-4step as of 2025
+    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        version: "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637",
         input: {
-          prompt,
+          prompt: prompt,
           negative_prompt: negative_prompt || "ugly, deformed, blurry, low quality, cartoon, artificial",
           width: 1024,
           height: 1024,
@@ -47,8 +49,13 @@ export default async function handler(req, res) {
     })
 
     const prediction = await startRes.json()
+
+    // Log response for debugging
+    console.log('Replicate response:', JSON.stringify(prediction).slice(0, 500))
+
     if (prediction.detail) throw new Error(prediction.detail)
     if (prediction.error) throw new Error(prediction.error)
+    if (!prediction.id) throw new Error('No prediction ID returned: ' + JSON.stringify(prediction).slice(0,200))
 
     return res.status(200).json({
       prediction_id: prediction.id,
@@ -57,6 +64,7 @@ export default async function handler(req, res) {
     })
 
   } catch (error) {
+    console.error('Render error:', error.message)
     return res.status(500).json({ error: error.message })
   }
 }
