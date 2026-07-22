@@ -1,12 +1,22 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   if (req.method === 'OPTIONS') return res.status(200).end()
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const apiKey = process.env.REPLICATE_API_TOKEN
+
+  // GET request - diagnostic check
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      has_token: !!apiKey,
+      token_length: apiKey ? apiKey.length : 0,
+      token_prefix: apiKey ? apiKey.slice(0, 4) : 'none'
+    })
+  }
+
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
   if (!apiKey) return res.status(500).json({ error: 'Replicate API token not configured' })
 
   const { prompt, prediction_id } = req.body
@@ -25,7 +35,7 @@ export default async function handler(req, res) {
       })
     }
 
-    // Use standard /v1/predictions endpoint with explicit version hash for flux-schnell
+    // Start prediction
     const startRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -53,7 +63,6 @@ export default async function handler(req, res) {
     if (prediction.detail) throw new Error(prediction.detail)
     if (prediction.error) throw new Error(prediction.error)
 
-    // Already done
     if (prediction.status === 'succeeded' && prediction.output) {
       return res.status(200).json({ output: prediction.output })
     }
