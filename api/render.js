@@ -5,28 +5,33 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const apiKey = process.env.REPLICATE_API_TOKEN
+  const apiKey = process.env.REPLICATE_API_TOKEN?.trim()
 
   if (req.method === 'GET') {
-    // Test the token by calling Replicate account endpoint
+    // Test both Bearer and Token auth formats
     try {
-      const testRes = await fetch('https://api.replicate.com/v1/account', {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      })
-      const testData = await testRes.json()
+      const [bearerRes, tokenRes] = await Promise.all([
+        fetch('https://api.replicate.com/v1/account', {
+          headers: { 'Authorization': `Bearer ${apiKey}` }
+        }),
+        fetch('https://api.replicate.com/v1/account', {
+          headers: { 'Authorization': `Token ${apiKey}` }
+        })
+      ])
+      const [bearerData, tokenData] = await Promise.all([
+        bearerRes.json(),
+        tokenRes.json()
+      ])
       return res.status(200).json({
-        has_token: !!apiKey,
         token_prefix: apiKey ? apiKey.slice(0, 6) : 'none',
         token_length: apiKey ? apiKey.length : 0,
-        replicate_test_status: testRes.status,
-        replicate_test_response: testData
+        bearer_status: bearerRes.status,
+        bearer_response: bearerData,
+        token_status: tokenRes.status,
+        token_response: tokenData,
       })
     } catch(e) {
-      return res.status(200).json({
-        has_token: !!apiKey,
-        token_prefix: apiKey ? apiKey.slice(0, 6) : 'none',
-        replicate_test_error: e.message
-      })
+      return res.status(200).json({ error: e.message })
     }
   }
 
@@ -48,7 +53,8 @@ export default async function handler(req, res) {
       })
     }
 
-    const startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
+    // Try Bearer first, fall back to Token if it fails
+    let startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -68,7 +74,32 @@ export default async function handler(req, res) {
       })
     })
 
-    const prediction = await startRes.json()
+    let prediction = await startRes.json()
+
+    // If Bearer fails try Token format
+    if (prediction.status === 401 || prediction.detail?.includes('token')) {
+      startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'wait=30'
+        },
+        body: JSON.stringify({
+          input: {
+            prompt,
+            num_outputs: 1,
+            aspect_ratio: "3:2",
+            output_format: "webp",
+            output_quality: 80,
+            num_inference_steps: 4,
+            go_fast: true,
+          }
+        })
+      })
+      prediction = await startRes.json()
+    }
+
     if (prediction.status === 'succeeded' && prediction.output) {
       return res.status(200).json({ output: prediction.output })
     }
