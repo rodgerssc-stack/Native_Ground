@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   const { prompt, negative_prompt, prediction_id } = req.body
 
   try {
-    // If polling an existing prediction
+    // Poll existing prediction
     if (prediction_id) {
       const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction_id}`, {
         headers: { 'Authorization': `Bearer ${apiKey}` }
@@ -25,37 +25,40 @@ export default async function handler(req, res) {
       })
     }
 
-    // Start new prediction - use /predictions with explicit version hash
-    // This is the latest working version of sdxl-lightning-4step as of 2025
-    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
+    // Use Flux Schnell - fastest actively maintained model on Replicate
+    const startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'Prefer': 'wait=55'
       },
       body: JSON.stringify({
-        version: "5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637",
         input: {
           prompt: prompt,
-          negative_prompt: negative_prompt || "ugly, deformed, blurry, low quality, cartoon, artificial",
-          width: 1024,
-          height: 1024,
-          num_inference_steps: 4,
-          guidance_scale: 0,
           num_outputs: 1,
-          scheduler: "K_EULER",
+          aspect_ratio: "3:2",
+          output_format: "webp",
+          output_quality: 80,
+          num_inference_steps: 4,
+          go_fast: true,
         }
       })
     })
 
     const prediction = await startRes.json()
-
-    // Log response for debugging
-    console.log('Replicate response:', JSON.stringify(prediction).slice(0, 500))
+    console.log('Replicate start response:', JSON.stringify(prediction).slice(0, 300))
 
     if (prediction.detail) throw new Error(prediction.detail)
     if (prediction.error) throw new Error(prediction.error)
-    if (!prediction.id) throw new Error('No prediction ID returned: ' + JSON.stringify(prediction).slice(0,200))
+
+    // Synchronous response - done already
+    if (prediction.status === 'succeeded' && prediction.output) {
+      return res.status(200).json({ output: prediction.output })
+    }
+
+    // Return prediction ID for browser polling
+    if (!prediction.id) throw new Error('No prediction ID: ' + JSON.stringify(prediction).slice(0, 200))
 
     return res.status(200).json({
       prediction_id: prediction.id,
@@ -70,5 +73,5 @@ export default async function handler(req, res) {
 }
 
 export const config = {
-  maxDuration: 30,
+  maxDuration: 60,
 }
