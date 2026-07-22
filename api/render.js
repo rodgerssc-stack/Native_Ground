@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.REPLICATE_API_TOKEN
 
-  // GET request - diagnostic check
+  // Diagnostic check
   if (req.method === 'GET') {
     return res.status(200).json({
       has_token: !!apiKey,
@@ -35,8 +35,8 @@ export default async function handler(req, res) {
       })
     }
 
-    // Start prediction
-    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
+    // Use the model deployment URL directly — correct format for Flux Schnell
+    const startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -44,7 +44,6 @@ export default async function handler(req, res) {
         'Prefer': 'wait=55'
       },
       body: JSON.stringify({
-        version: "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
         input: {
           prompt: prompt,
           num_outputs: 1,
@@ -58,11 +57,12 @@ export default async function handler(req, res) {
     })
 
     const prediction = await startRes.json()
-    console.log('Replicate response:', JSON.stringify(prediction).slice(0, 300))
+    console.log('Replicate response:', JSON.stringify(prediction).slice(0, 400))
 
     if (prediction.detail) throw new Error(prediction.detail)
     if (prediction.error) throw new Error(prediction.error)
 
+    // Synchronous — already done
     if (prediction.status === 'succeeded' && prediction.output) {
       return res.status(200).json({ output: prediction.output })
     }
