@@ -5,27 +5,40 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const replicateKey = process.env.REPLICATE_API_TOKEN
-  const anthropicKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = process.env.REPLICATE_API_TOKEN
 
   if (req.method === 'GET') {
-    return res.status(200).json({
-      has_replicate: !!replicateKey,
-      replicate_length: replicateKey ? replicateKey.length : 0,
-      replicate_prefix: replicateKey ? replicateKey.slice(0, 6) : 'none',
-      has_anthropic: !!anthropicKey,
-    })
+    // Test the token by calling Replicate account endpoint
+    try {
+      const testRes = await fetch('https://api.replicate.com/v1/account', {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      })
+      const testData = await testRes.json()
+      return res.status(200).json({
+        has_token: !!apiKey,
+        token_prefix: apiKey ? apiKey.slice(0, 6) : 'none',
+        token_length: apiKey ? apiKey.length : 0,
+        replicate_test_status: testRes.status,
+        replicate_test_response: testData
+      })
+    } catch(e) {
+      return res.status(200).json({
+        has_token: !!apiKey,
+        token_prefix: apiKey ? apiKey.slice(0, 6) : 'none',
+        replicate_test_error: e.message
+      })
+    }
   }
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+  if (!apiKey) return res.status(500).json({ error: 'No API key' })
 
   const { prompt, prediction_id } = req.body
 
-  // Poll existing prediction
-  if (prediction_id && replicateKey) {
-    try {
+  try {
+    if (prediction_id) {
       const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction_id}`, {
-        headers: { 'Authorization': `Bearer ${replicateKey}` }
+        headers: { 'Authorization': `Bearer ${apiKey}` }
       })
       const pollData = await pollRes.json()
       return res.status(200).json({
@@ -33,62 +46,44 @@ export default async function handler(req, res) {
         output: pollData.output,
         error: pollData.error
       })
-    } catch(e) {
-      return res.status(500).json({ error: e.message })
     }
-  }
 
-  // Try Replicate first
-  if (replicateKey) {
-    try {
-      const startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${replicateKey}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'wait=30'
-        },
-        body: JSON.stringify({
-          input: {
-            prompt,
-            num_outputs: 1,
-            aspect_ratio: "3:2",
-            output_format: "webp",
-            output_quality: 80,
-            num_inference_steps: 4,
-            go_fast: true,
-          }
-        })
+    const startRes = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'wait=30'
+      },
+      body: JSON.stringify({
+        input: {
+          prompt,
+          num_outputs: 1,
+          aspect_ratio: "3:2",
+          output_format: "webp",
+          output_quality: 80,
+          num_inference_steps: 4,
+          go_fast: true,
+        }
       })
+    })
 
-      const prediction = await startRes.json()
-      console.log('Replicate raw response:', JSON.stringify(prediction).slice(0, 500))
-
-      if (prediction.status === 'succeeded' && prediction.output) {
-        return res.status(200).json({ output: prediction.output })
-      }
-      if (prediction.id) {
-        return res.status(200).json({
-          prediction_id: prediction.id,
-          status: prediction.status,
-          output: null
-        })
-      }
-      // If Replicate fails log the full error
-      console.error('Replicate failed:', JSON.stringify(prediction))
-      throw new Error(prediction.detail || prediction.error || JSON.stringify(prediction).slice(0, 200))
-
-    } catch(e) {
-      console.error('Replicate error:', e.message)
-      // Fall through to return error with full details
-      return res.status(500).json({ 
-        error: e.message,
-        debug: 'Replicate call failed - check Vercel logs for full response'
+    const prediction = await startRes.json()
+    if (prediction.status === 'succeeded' && prediction.output) {
+      return res.status(200).json({ output: prediction.output })
+    }
+    if (prediction.id) {
+      return res.status(200).json({
+        prediction_id: prediction.id,
+        status: prediction.status,
+        output: null
       })
     }
-  }
+    throw new Error(prediction.detail || prediction.error || JSON.stringify(prediction).slice(0, 200))
 
-  return res.status(500).json({ error: 'No image generation service configured' })
+  } catch(e) {
+    return res.status(500).json({ error: e.message })
+  }
 }
 
 export const config = {
